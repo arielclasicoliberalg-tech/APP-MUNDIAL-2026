@@ -285,7 +285,7 @@ partidos_df, nombres_df = load_data()
 # LOGIN SIMPLE
 # =====================================================
 
-st.sidebar.title("👤 IDENTIFICACIÓN")
+st.sidebar.title("👤 USUARIO")
 
 usuario_actual = st.sidebar.selectbox(
     "Seleccione usuario",
