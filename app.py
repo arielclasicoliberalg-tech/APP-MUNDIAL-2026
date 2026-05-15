@@ -22,7 +22,7 @@ EXCEL_FILE = "MUNDIAL.xlsx"
 
 SUPABASE_URL = "https://wadioikactpavpspwitz.supabase.co"
 
-SUPABASE_KEY = "TU_ANON_PUBLIC_KEY"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhZGlvaWthY3RwYXZwc3B3aXR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NTMwNDksImV4cCI6MjA5NDQyOTA0OX0.nodjYPqIkuDKOe0d9VOzIxZmJcBZcXXQz8nrFrAR1sU"
 
 supabase = create_client(
     SUPABASE_URL,
