@@ -1,6 +1,6 @@
+from supabase import create_client
 import streamlit as st
 import pandas as pd
-import sqlite3
 import plotly.express as px
 from datetime import datetime
 import os
@@ -16,7 +16,20 @@ st.set_page_config(
 )
 
 EXCEL_FILE = "MUNDIAL.xlsx"
-DB_FILE = "mundial.db"
+
+# =====================================================
+# SUPABASE
+# =====================================================
+
+SUPABASE_URL = "https://wadioikactpavpspwitz.supabase.co"
+
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhZGlvaWthY3RwYXZwc3B3aXR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NTMwNDksImV4cCI6MjA5NDQyOTA0OX0.nodjYPqIkuDKOe0d9VOzIxZmJcBZcXXQz8nrFrAR1sU"
+
+supabase = create_client(
+    SUPABASE_URL,
+    SUPABASE_KEY
+)
+
 ADMIN_PASSWORD = "PIPOCHOCO"
 
 # =====================================================
@@ -26,18 +39,10 @@ ADMIN_PASSWORD = "PIPOCHOCO"
 st.markdown("""
 <style>
 
-/* =====================================================
-FONDO
-===================================================== */
-
 .stApp {
     background: linear-gradient(135deg, #020617, #071226);
     overflow: hidden;
 }
-
-/* =====================================================
-PELOTAS ANIMADAS
-===================================================== */
 
 body::before {
     content: "⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽";
@@ -81,36 +86,19 @@ body::after {
     }
 }
 
-/* =====================================================
-CONTENIDO
-===================================================== */
-
 .block-container {
     position: relative;
     z-index: 2;
 }
 
-/* =====================================================
-SIDEBAR
-===================================================== */
-
 section[data-testid="stSidebar"] {
     background: rgba(2,6,23,0.95);
-    border-right: 1px solid rgba(255,255,255,0.08);
 }
-
-/* =====================================================
-TEXTOS
-===================================================== */
 
 h1, h2, h3, h4, h5, h6,
 p, label, span {
     color: white !important;
 }
-
-/* =====================================================
-CARDS
-===================================================== */
 
 .card {
     background: rgba(255,255,255,0.06);
@@ -121,20 +109,9 @@ CARDS
     box-shadow: 0 8px 30px rgba(0,0,0,0.4);
 }
 
-/* =====================================================
-INPUTS
-===================================================== */
-
-.stSelectbox div[data-baseweb="select"] {
-    background-color: rgba(255,255,255,0.08) !important;
-    border-radius: 12px !important;
-    color: white !important;
-}
-
 .stTextInput input {
     background-color: white !important;
     color: black !important;
-    border-radius: 12px !important;
 }
 
 .stNumberInput input {
@@ -143,12 +120,7 @@ INPUTS
     font-size: 30px !important;
     font-weight: bold !important;
     text-align: center !important;
-    border-radius: 14px !important;
 }
-
-/* =====================================================
-BOTONES
-===================================================== */
 
 .stButton>button {
     background: linear-gradient(90deg,#2563eb,#7c3aed);
@@ -158,102 +130,14 @@ BOTONES
     padding: 12px 24px;
     font-size: 16px;
     font-weight: bold;
-    transition: 0.3s;
-    box-shadow: 0 5px 15px rgba(37,99,235,0.4);
 }
 
 .stButton>button:hover {
     transform: scale(1.05);
-    background: linear-gradient(90deg,#7c3aed,#2563eb);
-}
-
-/* =====================================================
-TABLAS
-===================================================== */
-
-[data-testid="stDataFrame"] {
-    background: rgba(255,255,255,0.04);
-    border-radius: 15px;
-}
-
-/* =====================================================
-FESTEJO
-===================================================== */
-
-.festejo {
-    position: fixed;
-    top: -50px;
-    font-size: 35px;
-    animation: caer 5s linear infinite;
-    z-index: 9999;
-}
-
-.f1 { left: 5%; animation-delay: 0s; }
-.f2 { left: 15%; animation-delay: 1s; }
-.f3 { left: 25%; animation-delay: 2s; }
-.f4 { left: 35%; animation-delay: 0.5s; }
-.f5 { left: 45%; animation-delay: 1.5s; }
-.f6 { left: 55%; animation-delay: 2.5s; }
-.f7 { left: 65%; animation-delay: 0.7s; }
-.f8 { left: 75%; animation-delay: 1.7s; }
-.f9 { left: 85%; animation-delay: 2.7s; }
-
-@keyframes caer {
-
-    0% {
-        transform: translateY(-100px) rotate(0deg);
-        opacity: 1;
-    }
-
-    100% {
-        transform: translateY(120vh) rotate(720deg);
-        opacity: 0;
-    }
 }
 
 </style>
 """, unsafe_allow_html=True)
-
-# =====================================================
-# BASE DE DATOS
-# =====================================================
-
-def get_connection():
-    return sqlite3.connect(DB_FILE, check_same_thread=False)
-
-
-def init_database():
-
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS Pronosticos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT,
-        id_partido INTEGER,
-        goles_1 INTEGER,
-        goles_2 INTEGER,
-        timestamp_registro TEXT
-    )
-    """)
-
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS Resultados_Oficiales (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        id_partido INTEGER,
-        goles_1 INTEGER,
-        goles_2 INTEGER,
-        timestamp_registro TEXT
-    )
-    """)
-
-    conn.commit()
-    conn.close()
-
-
-if not os.path.exists(DB_FILE):
-    init_database()
 
 # =====================================================
 # CARGAR EXCEL
@@ -282,7 +166,7 @@ def load_data():
 partidos_df, nombres_df = load_data()
 
 # =====================================================
-# LOGIN SIMPLE
+# LOGIN
 # =====================================================
 
 st.sidebar.title("👤 USUARIO")
@@ -339,7 +223,6 @@ opciones_menu = [
     "📊 TABLA DE PUNTOS"
 ]
 
-# SOLO ARIEL VE ADMINISTRACIÓN
 if usuario_actual.upper() == "ARIEL":
 
     opciones_menu.append(
@@ -358,8 +241,6 @@ vista = st.sidebar.radio(
 if vista == "📝 LLENAR MIS PRONÓSTICOS":
 
     st.title("📝 LLENAR MIS PRONÓSTICOS")
-
-    st.subheader(f"Usuario: {usuario_actual}")
 
     fechas = sorted(
         partidos_df["FECHA"].unique()
@@ -418,25 +299,20 @@ if vista == "📝 LLENAR MIS PRONÓSTICOS":
 
     if st.button("💾 GUARDAR PRONÓSTICO"):
 
-        conn = get_connection()
-        cursor = conn.cursor()
-
-        cursor.execute("""
-        SELECT *
-        FROM Pronosticos
-        WHERE nombre = ?
-        AND id_partido = ?
-        """, (
-            usuario_actual,
+        validacion = supabase.table(
+            "Pronosticos"
+        ).select("*").eq(
+            "nombre",
+            usuario_actual
+        ).eq(
+            "id_partido",
             int(info["NUMERO_PARTIDO"])
-        ))
+        ).execute()
 
-        existe = cursor.fetchone()
-
-        if existe:
+        if len(validacion.data) > 0:
 
             st.error(
-                "⚠️ Ya registraste un pronóstico para este partido."
+                "⚠️ Ya registraste un pronóstico."
             )
 
         else:
@@ -445,45 +321,21 @@ if vista == "📝 LLENAR MIS PRONÓSTICOS":
                 "%Y-%m-%d %H:%M:%S"
             )
 
-            cursor.execute("""
-            INSERT INTO Pronosticos
-            (
-                nombre,
-                id_partido,
-                goles_1,
-                goles_2,
-                timestamp_registro
-            )
-            VALUES (?, ?, ?, ?, ?)
-            """, (
-                usuario_actual,
-                int(info["NUMERO_PARTIDO"]),
-                goles1,
-                goles2,
-                timestamp
-            ))
-
-            conn.commit()
+            supabase.table(
+                "Pronosticos"
+            ).insert({
+                "nombre": usuario_actual,
+                "id_partido": int(info["NUMERO_PARTIDO"]),
+                "goles_1": goles1,
+                "goles_2": goles2,
+                "timestamp_registro": timestamp
+            }).execute()
 
             st.success(
-                "✅ Pronóstico guardado correctamente."
+                "✅ Pronóstico guardado."
             )
 
             st.balloons()
-
-            st.markdown("""
-            <div class="festejo f1">⚽</div>
-            <div class="festejo f2">⚽</div>
-            <div class="festejo f3">⚽</div>
-            <div class="festejo f4">⚽</div>
-            <div class="festejo f5">⚽</div>
-            <div class="festejo f6">⚽</div>
-            <div class="festejo f7">⚽</div>
-            <div class="festejo f8">⚽</div>
-            <div class="festejo f9">⚽</div>
-            """, unsafe_allow_html=True)
-
-        conn.close()
 
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -515,44 +367,51 @@ elif vista == "📋 MIS PRONÓSTICOS":
         partidos_fecha["PARTIDO"] == partido
     ].iloc[0]
 
-    conn = get_connection()
+    data = supabase.table(
+        "Pronosticos"
+    ).select("*").eq(
+        "id_partido",
+        int(info["NUMERO_PARTIDO"])
+    ).execute()
 
-    query = f"""
-    SELECT
-        nombre,
-        goles_1 || ' - ' || goles_2 as pronostico,
-        timestamp_registro
-    FROM Pronosticos
-    WHERE id_partido = {int(info["NUMERO_PARTIDO"])}
-    ORDER BY timestamp_registro
-    """
+    df = pd.DataFrame(data.data)
 
-    df = pd.read_sql_query(query, conn)
+    if not df.empty:
 
-    conn.close()
+        df["PARTIDO"] = partido
 
-    df["PARTIDO"] = partido
+        df["PRONÓSTICO"] = (
+            df["goles_1"].astype(str)
+            + " - "
+            + df["goles_2"].astype(str)
+        )
 
-    df = df[
-        [
-            "nombre",
-            "PARTIDO",
-            "pronostico",
-            "timestamp_registro"
+        mostrar = df[
+            [
+                "nombre",
+                "PARTIDO",
+                "PRONÓSTICO",
+                "timestamp_registro"
+            ]
         ]
-    ]
 
-    df.columns = [
-        "NOMBRE",
-        "PARTIDO",
-        "PRONÓSTICO",
-        "FECHA REGISTRO"
-    ]
+        mostrar.columns = [
+            "NOMBRE",
+            "PARTIDO",
+            "PRONÓSTICO",
+            "FECHA REGISTRO"
+        ]
 
-    st.dataframe(
-        df,
-        use_container_width=True
-    )
+        st.dataframe(
+            mostrar,
+            use_container_width=True
+        )
+
+    else:
+
+        st.info(
+            "No existen pronósticos."
+        )
 
 # =====================================================
 # VISTA 3
@@ -562,23 +421,14 @@ elif vista == "🏆 RESULTADOS OFICIALES":
 
     st.title("🏆 RESULTADOS OFICIALES")
 
-    conn = get_connection()
-
-    # SOLO ARIEL VE PANEL ADMIN
     if usuario_actual.upper() == "ARIEL":
-
-        st.subheader("🔐 Panel Administrador")
 
         password = st.text_input(
             "Ingrese contraseña",
             type="password"
         )
 
-        autorizado = password == ADMIN_PASSWORD
-
-        if autorizado:
-
-            st.success("✅ Acceso autorizado.")
+        if password == ADMIN_PASSWORD:
 
             fechas = sorted(
                 partidos_df["FECHA"].unique()
@@ -632,48 +482,37 @@ elif vista == "🏆 RESULTADOS OFICIALES":
 
             if st.button("💾 GUARDAR RESULTADO"):
 
-                cursor = conn.cursor()
-
-                cursor.execute("""
-                DELETE FROM Resultados_Oficiales
-                WHERE id_partido = ?
-                """, (int(info["NUMERO_PARTIDO"]),))
+                supabase.table(
+                    "Resultados_Oficiales"
+                ).delete().eq(
+                    "id_partido",
+                    int(info["NUMERO_PARTIDO"])
+                ).execute()
 
                 timestamp = datetime.now().strftime(
                     "%Y-%m-%d %H:%M:%S"
                 )
 
-                cursor.execute("""
-                INSERT INTO Resultados_Oficiales
-                (
-                    id_partido,
-                    goles_1,
-                    goles_2,
-                    timestamp_registro
+                supabase.table(
+                    "Resultados_Oficiales"
+                ).insert({
+                    "id_partido": int(info["NUMERO_PARTIDO"]),
+                    "goles_1": g1,
+                    "goles_2": g2,
+                    "timestamp_registro": timestamp
+                }).execute()
+
+                st.success(
+                    "✅ Resultado guardado."
                 )
-                VALUES (?, ?, ?, ?)
-                """, (
-                    int(info["NUMERO_PARTIDO"]),
-                    g1,
-                    g2,
-                    timestamp
-                ))
-
-                conn.commit()
-
-                st.success("✅ Resultado guardado.")
-
-    # TABLA PARA TODOS
 
     st.subheader("📋 Resultados Registrados")
 
-    resultados = pd.read_sql_query("""
-    SELECT *
-    FROM Resultados_Oficiales
-    ORDER BY id_partido
-    """, conn)
+    data = supabase.table(
+        "Resultados_Oficiales"
+    ).select("*").execute()
 
-    conn.close()
+    resultados = pd.DataFrame(data.data)
 
     if not resultados.empty:
 
@@ -721,10 +560,6 @@ elif vista == "🏆 RESULTADOS OFICIALES":
             use_container_width=True
         )
 
-    else:
-
-        st.info("Aún no existen resultados oficiales.")
-
 # =====================================================
 # VISTA 4
 # =====================================================
@@ -733,114 +568,101 @@ elif vista == "📊 TABLA DE PUNTOS":
 
     st.title("📊 TABLA DE PUNTOS")
 
-    conn = get_connection()
-
-    pron = pd.read_sql_query(
-        "SELECT * FROM Pronosticos",
-        conn
+    pron = pd.DataFrame(
+        supabase.table(
+            "Pronosticos"
+        ).select("*").execute().data
     )
 
-    real = pd.read_sql_query(
-        "SELECT * FROM Resultados_Oficiales",
-        conn
+    real = pd.DataFrame(
+        supabase.table(
+            "Resultados_Oficiales"
+        ).select("*").execute().data
     )
-
-    conn.close()
 
     if pron.empty or real.empty:
 
-        st.warning("No existen datos suficientes.")
-        st.stop()
-
-    merged = pron.merge(
-        real,
-        on="id_partido",
-        suffixes=("_pron", "_real")
-    )
-
-    merged = merged.merge(
-        partidos_df,
-        left_on="id_partido",
-        right_on="NUMERO_PARTIDO"
-    )
-
-    puntos = []
-
-    for _, row in merged.iterrows():
-
-        fecha_partido = datetime.combine(
-            row["FECHA"],
-            pd.to_datetime(
-                str(row["HORA"])
-            ).time()
+        st.warning(
+            "No existen datos suficientes."
         )
 
-        fecha_registro = datetime.strptime(
-            row["timestamp_registro_pron"],
-            "%Y-%m-%d %H:%M:%S"
+    else:
+
+        merged = pron.merge(
+            real,
+            on="id_partido",
+            suffixes=("_pron", "_real")
         )
 
-        if fecha_registro > fecha_partido:
-            pts = 0
-        else:
-            pts = calcular_puntos(
-                row["goles_1_pron"],
-                row["goles_2_pron"],
-                row["goles_1_real"],
-                row["goles_2_real"]
+        merged = merged.merge(
+            partidos_df,
+            left_on="id_partido",
+            right_on="NUMERO_PARTIDO"
+        )
+
+        puntos = []
+
+        for _, row in merged.iterrows():
+
+            fecha_partido = datetime.combine(
+                row["FECHA"],
+                pd.to_datetime(
+                    str(row["HORA"])
+                ).time()
             )
 
-        puntos.append(pts)
+            fecha_registro = datetime.strptime(
+                row["timestamp_registro_pron"],
+                "%Y-%m-%d %H:%M:%S"
+            )
 
-    merged["PUNTOS"] = puntos
+            if fecha_registro > fecha_partido:
+                pts = 0
+            else:
+                pts = calcular_puntos(
+                    row["goles_1_pron"],
+                    row["goles_2_pron"],
+                    row["goles_1_real"],
+                    row["goles_2_real"]
+                )
 
-    tabla = merged.groupby(
-        "nombre"
-    )["PUNTOS"].sum().reset_index()
+            puntos.append(pts)
 
-    tabla = tabla.sort_values(
-        by="PUNTOS",
-        ascending=False
-    )
+        merged["PUNTOS"] = puntos
 
-    fig = px.bar(
-        tabla,
-        x="PUNTOS",
-        y="nombre",
-        orientation="h",
-        text="PUNTOS",
-        color="nombre"
-    )
+        tabla = merged.groupby(
+            "nombre"
+        )["PUNTOS"].sum().reset_index()
 
-    fig.update_layout(
-        paper_bgcolor="#071226",
-        plot_bgcolor="#071226",
-        font_color="white",
-        height=600,
-        showlegend=False
-    )
+        tabla = tabla.sort_values(
+            by="PUNTOS",
+            ascending=False
+        )
 
-    fig.update_traces(
-        textposition="outside"
-    )
+        fig = px.bar(
+            tabla,
+            x="PUNTOS",
+            y="nombre",
+            orientation="h",
+            text="PUNTOS",
+            color="nombre"
+        )
 
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
+        fig.update_layout(
+            paper_bgcolor="#071226",
+            plot_bgcolor="#071226",
+            font_color="white",
+            height=600,
+            showlegend=False
+        )
 
-    tabla.columns = [
-        "USUARIO",
-        "PUNTOS"
-    ]
-
-    st.dataframe(
-        tabla,
-        use_container_width=True
-    )
+        st.plotly_chart(
+            fig,
+            use_container_width=True
+        )
 
 # =====================================================
-# VISTA 5 SOLO ARIEL
+# VISTA 5
 # =====================================================
 
 elif vista == "🗑️ ADMINISTRAR PRONÓSTICOS":
@@ -854,19 +676,13 @@ elif vista == "🗑️ ADMINISTRAR PRONÓSTICOS":
 
     if password == ADMIN_PASSWORD:
 
-        conn = get_connection()
+        data = supabase.table(
+            "Pronosticos"
+        ).select("*").execute()
 
-        pronosticos = pd.read_sql_query("""
-        SELECT *
-        FROM Pronosticos
-        ORDER BY timestamp_registro DESC
-        """, conn)
+        pronosticos = pd.DataFrame(data.data)
 
-        if pronosticos.empty:
-
-            st.warning("No existen pronósticos.")
-
-        else:
+        if not pronosticos.empty:
 
             pronosticos = pronosticos.merge(
                 partidos_df[
@@ -924,20 +740,13 @@ elif vista == "🗑️ ADMINISTRAR PRONÓSTICOS":
 
             if st.button("🗑️ ELIMINAR PRONÓSTICO"):
 
-                cursor = conn.cursor()
-
-                cursor.execute("""
-                DELETE FROM Pronosticos
-                WHERE id = ?
-                """, (id_eliminar,))
-
-                conn.commit()
+                supabase.table(
+                    "Pronosticos"
+                ).delete().eq(
+                    "id",
+                    id_eliminar
+                ).execute()
 
                 st.success(
-                    "✅ Pronóstico eliminado correctamente."
+                    "✅ Pronóstico eliminado."
                 )
-
-        conn.close()
-
-    else:
-        st.info("Ingrese contraseña administrador.")
