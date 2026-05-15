@@ -800,7 +800,7 @@ elif vista == "🗑️ ADMINISTRAR PRONÓSTICOS":
                 st.success(
                     "✅ Pronóstico eliminado"
                 )
-```
+
 
 # IMPORTANTE
 
