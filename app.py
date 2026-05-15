@@ -150,7 +150,7 @@ partidos_df, nombres_df = cargar_datos()
 # LOGIN
 # =====================================================
 
-st.sidebar.title("👤 IDENTIFICACIÓN")
+st.sidebar.title("👤 USUARIO")
 
 usuario_actual = st.sidebar.selectbox(
     "Seleccione usuario",
@@ -686,79 +686,92 @@ elif vista == "🗑️ ADMINISTRAR PRONÓSTICOS":
 
     st.title("🗑️ ADMINISTRAR PRONÓSTICOS")
 
-    data = supabase.table(
-        "Pronosticos"
-    ).select("*").execute()
+    password_admin = st.text_input(
+        "Ingrese contraseña de administrador",
+        type="password"
+    )
 
-    df = pd.DataFrame(data.data)
+    if password_admin == ADMIN_PASSWORD:
 
-    if not df.empty:
+        data = supabase.table(
+            "Pronosticos"
+        ).select("*").execute()
 
-        df = df.merge(
-            partidos_df,
-            left_on="id_partido",
-            right_on="NUMERO_PARTIDO"
-        )
+        df = pd.DataFrame(data.data)
 
-        df["PARTIDO"] = (
-            df["EQUIPO_1"]
-            + " vs "
-            + df["EQUIPO_2"]
-        )
+        if not df.empty:
 
-        df["PRONOSTICO"] = (
-            df["goles_1"].astype(str)
-            + " - "
-            + df["goles_2"].astype(str)
-        )
-
-        mostrar = df[
-            [
-                "id",
-                "nombre",
-                "PARTIDO",
-                "PRONOSTICO",
-                "timestamp_registro"
-            ]
-        ]
-
-        mostrar.columns = [
-            "ID",
-            "USUARIO",
-            "PARTIDO",
-            "PRONÓSTICO",
-            "FECHA REGISTRO"
-        ]
-
-        st.dataframe(
-            mostrar,
-            use_container_width=True
-        )
-
-        ids = mostrar["ID"].tolist()
-
-        eliminar_id = st.selectbox(
-            "Seleccione ID a eliminar",
-            ids
-        )
-
-        if st.button("❌ ELIMINAR PRONÓSTICO"):
-
-            supabase.table(
-                "Pronosticos"
-            ).delete().eq(
-                "id",
-                int(eliminar_id)
-            ).execute()
-
-            st.success(
-                "✅ Pronóstico eliminado correctamente."
+            df = df.merge(
+                partidos_df,
+                left_on="id_partido",
+                right_on="NUMERO_PARTIDO"
             )
 
-            st.rerun()
+            df["PARTIDO"] = (
+                df["EQUIPO_1"]
+                + " vs "
+                + df["EQUIPO_2"]
+            )
 
-    else:
+            df["PRONOSTICO"] = (
+                df["goles_1"].astype(str)
+                + " - "
+                + df["goles_2"].astype(str)
+            )
 
-        st.info(
-            "No existen pronósticos registrados."
+            mostrar = df[
+                [
+                    "id",
+                    "nombre",
+                    "PARTIDO",
+                    "PRONOSTICO",
+                    "timestamp_registro"
+                ]
+            ]
+
+            mostrar.columns = [
+                "ID",
+                "USUARIO",
+                "PARTIDO",
+                "PRONÓSTICO",
+                "FECHA REGISTRO"
+            ]
+
+            st.dataframe(
+                mostrar,
+                use_container_width=True
+            )
+
+            ids = mostrar["ID"].tolist()
+
+            eliminar_id = st.selectbox(
+                "Seleccione ID a eliminar",
+                ids
+            )
+
+            if st.button("❌ ELIMINAR PRONÓSTICO"):
+
+                supabase.table(
+                    "Pronosticos"
+                ).delete().eq(
+                    "id",
+                    int(eliminar_id)
+                ).execute()
+
+                st.success(
+                    "✅ Pronóstico eliminado correctamente."
+                )
+
+                st.rerun()
+
+        else:
+
+            st.info(
+                "No existen pronósticos registrados."
+            )
+
+    elif password_admin != "":
+
+        st.error(
+            "❌ Contraseña incorrecta."
         )
