@@ -1,6 +1,6 @@
 # APP.PY COMPLETO
 
-```python
+
 from supabase import create_client
 import streamlit as st
 import pandas as pd
