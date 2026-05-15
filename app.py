@@ -1,9 +1,12 @@
+# APP.PY COMPLETO
+
+```python
 from supabase import create_client
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 from datetime import datetime
-import os
+import base64
 
 # =====================================================
 # CONFIGURACIÓN
@@ -45,44 +48,44 @@ st.markdown("""
 }
 
 body::before {
-    content: "⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽";
+    content: "⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽";
     position: fixed;
-    top: 10%;
-    left: -40%;
-    font-size: 80px;
-    opacity: 0.06;
-    animation: mover1 40s linear infinite;
+    top: 8%;
+    left: -60%;
+    font-size: 90px;
+    opacity: 0.07;
+    animation: mover1 30s linear infinite;
     z-index: 0;
     white-space: nowrap;
 }
 
 body::after {
-    content: "⚽ ⚽ ⚽ ⚽ ⚽ ⚽";
+    content: "⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽";
     position: fixed;
-    bottom: 15%;
-    right: -40%;
-    font-size: 100px;
+    bottom: 10%;
+    right: -60%;
+    font-size: 110px;
     opacity: 0.05;
-    animation: mover2 50s linear infinite;
+    animation: mover2 35s linear infinite;
     z-index: 0;
     white-space: nowrap;
 }
 
 @keyframes mover1 {
     0% {
-        transform: translateX(-20%);
+        transform: translateX(-10%);
     }
     100% {
-        transform: translateX(180%);
+        transform: translateX(220%);
     }
 }
 
 @keyframes mover2 {
     0% {
-        transform: translateX(20%);
+        transform: translateX(10%);
     }
     100% {
-        transform: translateX(-180%);
+        transform: translateX(-220%);
     }
 }
 
@@ -117,7 +120,7 @@ p, label, span {
 .stNumberInput input {
     background-color: white !important;
     color: black !important;
-    font-size: 30px !important;
+    font-size: 35px !important;
     font-weight: bold !important;
     text-align: center !important;
 }
@@ -128,8 +131,9 @@ p, label, span {
     border-radius: 14px;
     border: none;
     padding: 12px 24px;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
+    transition: 0.3s;
 }
 
 .stButton>button:hover {
@@ -138,6 +142,19 @@ p, label, span {
 
 </style>
 """, unsafe_allow_html=True)
+
+# =====================================================
+# SONIDO ENTRADA
+# =====================================================
+
+st.markdown(
+    """
+    <audio autoplay>
+        <source src="https://www.soundjay.com/buttons/sounds/button-09.mp3" type="audio/mpeg">
+    </audio>
+    """,
+    unsafe_allow_html=True
+)
 
 # =====================================================
 # CARGAR EXCEL
@@ -312,7 +329,7 @@ if vista == "📝 LLENAR MIS PRONÓSTICOS":
         if len(validacion.data) > 0:
 
             st.error(
-                "⚠️ Ya registraste un pronóstico."
+                "⚠️ Ya registraste un pronóstico para este partido."
             )
 
         else:
@@ -332,10 +349,29 @@ if vista == "📝 LLENAR MIS PRONÓSTICOS":
             }).execute()
 
             st.success(
-                "✅ Pronóstico guardado."
+                "✅ Pronóstico guardado correctamente"
             )
 
-            st.balloons()
+            for i in range(5):
+                st.balloons()
+
+            st.markdown(
+                """
+                <audio autoplay>
+                    <source src="https://www.soundjay.com/human/sounds/applause-8.mp3" type="audio/mpeg">
+                </audio>
+                """,
+                unsafe_allow_html=True
+            )
+
+            st.markdown(
+                """
+                <div style='font-size:80px;text-align:center;'>
+                ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -503,7 +539,7 @@ elif vista == "🏆 RESULTADOS OFICIALES":
                 }).execute()
 
                 st.success(
-                    "✅ Resultado guardado."
+                    "✅ Resultado oficial guardado"
                 )
 
     st.subheader("📋 Resultados Registrados")
@@ -661,6 +697,20 @@ elif vista == "📊 TABLA DE PUNTOS":
             use_container_width=True
         )
 
+        st.subheader("📋 Tabla General")
+
+        mostrar_tabla = tabla.copy()
+
+        mostrar_tabla.columns = [
+            "USUARIO",
+            "PUNTOS"
+        ]
+
+        st.dataframe(
+            mostrar_tabla,
+            use_container_width=True
+        )
+
 # =====================================================
 # VISTA 5
 # =====================================================
@@ -748,5 +798,23 @@ elif vista == "🗑️ ADMINISTRAR PRONÓSTICOS":
                 ).execute()
 
                 st.success(
-                    "✅ Pronóstico eliminado."
+                    "✅ Pronóstico eliminado"
                 )
+```
+
+# IMPORTANTE
+
+REEMPLAZA:
+
+```python
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhZGlvaWthY3RwYXZwc3B3aXR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NTMwNDksImV4cCI6MjA5NDQyOTA0OX0.nodjYPqIkuDKOe0d9VOzIxZmJcBZcXXQz8nrFrAR1sU"
+```
+
+por tu key real de Supabase.
+
+Luego:
+
+1. Guarda app.py
+2. Súbelo a GitHub
+3. Espera el redeploy automático
+4. Listo
