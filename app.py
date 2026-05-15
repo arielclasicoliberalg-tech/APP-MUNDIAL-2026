@@ -1,12 +1,8 @@
-# APP.PY COMPLETO
-
-
 from supabase import create_client
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 from datetime import datetime
-import base64
 
 # =====================================================
 # CONFIGURACIÓN
@@ -26,7 +22,7 @@ EXCEL_FILE = "MUNDIAL.xlsx"
 
 SUPABASE_URL = "https://wadioikactpavpspwitz.supabase.co"
 
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhZGlvaWthY3RwYXZwc3B3aXR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NTMwNDksImV4cCI6MjA5NDQyOTA0OX0.nodjYPqIkuDKOe0d9VOzIxZmJcBZcXXQz8nrFrAR1sU"
+SUPABASE_KEY = "TU_ANON_PUBLIC_KEY"
 
 supabase = create_client(
     SUPABASE_URL,
@@ -36,7 +32,7 @@ supabase = create_client(
 ADMIN_PASSWORD = "PIPOCHOCO"
 
 # =====================================================
-# CSS PREMIUM
+# CSS
 # =====================================================
 
 st.markdown("""
@@ -48,7 +44,7 @@ st.markdown("""
 }
 
 body::before {
-    content: "⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽";
+    content: "⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽";
     position: fixed;
     top: 8%;
     left: -60%;
@@ -329,7 +325,7 @@ if vista == "📝 LLENAR MIS PRONÓSTICOS":
         if len(validacion.data) > 0:
 
             st.error(
-                "⚠️ Ya registraste un pronóstico para este partido."
+                "⚠️ Ya registraste un pronóstico."
             )
 
         else:
@@ -349,11 +345,8 @@ if vista == "📝 LLENAR MIS PRONÓSTICOS":
             }).execute()
 
             st.success(
-                "✅ Pronóstico guardado correctamente"
+                "✅ Pronóstico guardado."
             )
-
-            for i in range(5):
-                st.balloons()
 
             st.markdown(
                 """
@@ -366,8 +359,49 @@ if vista == "📝 LLENAR MIS PRONÓSTICOS":
 
             st.markdown(
                 """
-                <div style='font-size:80px;text-align:center;'>
-                ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽
+                <style>
+
+                .pelotas {
+                    position: fixed;
+                    top: -100px;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    pointer-events: none;
+                    z-index: 9999;
+                }
+
+                .pelota {
+                    position: absolute;
+                    font-size: 50px;
+                    animation: caer 4s linear forwards;
+                }
+
+                @keyframes caer {
+                    0% {
+                        transform: translateY(-100px) rotate(0deg);
+                        opacity: 1;
+                    }
+
+                    100% {
+                        transform: translateY(120vh) rotate(720deg);
+                        opacity: 0;
+                    }
+                }
+
+                </style>
+
+                <div class="pelotas">
+                    <div class="pelota" style="left:5%; animation-delay:0s;">⚽</div>
+                    <div class="pelota" style="left:15%; animation-delay:0.2s;">⚽</div>
+                    <div class="pelota" style="left:25%; animation-delay:0.4s;">⚽</div>
+                    <div class="pelota" style="left:35%; animation-delay:0.6s;">⚽</div>
+                    <div class="pelota" style="left:45%; animation-delay:0.8s;">⚽</div>
+                    <div class="pelota" style="left:55%; animation-delay:1s;">⚽</div>
+                    <div class="pelota" style="left:65%; animation-delay:1.2s;">⚽</div>
+                    <div class="pelota" style="left:75%; animation-delay:1.4s;">⚽</div>
+                    <div class="pelota" style="left:85%; animation-delay:1.6s;">⚽</div>
+                    <div class="pelota" style="left:95%; animation-delay:1.8s;">⚽</div>
                 </div>
                 """,
                 unsafe_allow_html=True
@@ -441,12 +475,6 @@ elif vista == "📋 MIS PRONÓSTICOS":
         st.dataframe(
             mostrar,
             use_container_width=True
-        )
-
-    else:
-
-        st.info(
-            "No existen pronósticos."
         )
 
 # =====================================================
@@ -539,62 +567,8 @@ elif vista == "🏆 RESULTADOS OFICIALES":
                 }).execute()
 
                 st.success(
-                    "✅ Resultado oficial guardado"
+                    "✅ Resultado guardado."
                 )
-
-    st.subheader("📋 Resultados Registrados")
-
-    data = supabase.table(
-        "Resultados_Oficiales"
-    ).select("*").execute()
-
-    resultados = pd.DataFrame(data.data)
-
-    if not resultados.empty:
-
-        resultados = resultados.merge(
-            partidos_df[
-                [
-                    "NUMERO_PARTIDO",
-                    "EQUIPO_1",
-                    "EQUIPO_2"
-                ]
-            ],
-            left_on="id_partido",
-            right_on="NUMERO_PARTIDO",
-            how="left"
-        )
-
-        resultados["PARTIDO"] = (
-            resultados["EQUIPO_1"]
-            + " vs "
-            + resultados["EQUIPO_2"]
-        )
-
-        resultados["RESULTADO"] = (
-            resultados["goles_1"].astype(str)
-            + " - "
-            + resultados["goles_2"].astype(str)
-        )
-
-        mostrar = resultados[
-            [
-                "PARTIDO",
-                "RESULTADO",
-                "timestamp_registro"
-            ]
-        ]
-
-        mostrar.columns = [
-            "PARTIDO",
-            "RESULTADO OFICIAL",
-            "FECHA REGISTRO"
-        ]
-
-        st.dataframe(
-            mostrar,
-            use_container_width=True
-        )
 
 # =====================================================
 # VISTA 4
@@ -616,13 +590,7 @@ elif vista == "📊 TABLA DE PUNTOS":
         ).select("*").execute().data
     )
 
-    if pron.empty or real.empty:
-
-        st.warning(
-            "No existen datos suficientes."
-        )
-
-    else:
+    if not pron.empty and not real.empty:
 
         merged = pron.merge(
             real,
@@ -697,109 +665,7 @@ elif vista == "📊 TABLA DE PUNTOS":
             use_container_width=True
         )
 
-        st.subheader("📋 Tabla General")
-
-        mostrar_tabla = tabla.copy()
-
-        mostrar_tabla.columns = [
-            "USUARIO",
-            "PUNTOS"
-        ]
-
         st.dataframe(
-            mostrar_tabla,
+            tabla,
             use_container_width=True
         )
-
-# =====================================================
-# VISTA 5
-# =====================================================
-
-elif vista == "🗑️ ADMINISTRAR PRONÓSTICOS":
-
-    st.title("🗑️ ADMINISTRAR PRONÓSTICOS")
-
-    password = st.text_input(
-        "Ingrese contraseña administrador",
-        type="password"
-    )
-
-    if password == ADMIN_PASSWORD:
-
-        data = supabase.table(
-            "Pronosticos"
-        ).select("*").execute()
-
-        pronosticos = pd.DataFrame(data.data)
-
-        if not pronosticos.empty:
-
-            pronosticos = pronosticos.merge(
-                partidos_df[
-                    [
-                        "NUMERO_PARTIDO",
-                        "EQUIPO_1",
-                        "EQUIPO_2"
-                    ]
-                ],
-                left_on="id_partido",
-                right_on="NUMERO_PARTIDO",
-                how="left"
-            )
-
-            pronosticos["PARTIDO"] = (
-                pronosticos["EQUIPO_1"]
-                + " vs "
-                + pronosticos["EQUIPO_2"]
-            )
-
-            pronosticos["PRONOSTICO"] = (
-                pronosticos["goles_1"].astype(str)
-                + " - "
-                + pronosticos["goles_2"].astype(str)
-            )
-
-            mostrar = pronosticos[
-                [
-                    "id",
-                    "nombre",
-                    "PARTIDO",
-                    "PRONOSTICO",
-                    "timestamp_registro"
-                ]
-            ]
-
-            mostrar.columns = [
-                "ID",
-                "USUARIO",
-                "PARTIDO",
-                "PRONÓSTICO",
-                "FECHA REGISTRO"
-            ]
-
-            st.dataframe(
-                mostrar,
-                use_container_width=True
-            )
-
-            id_eliminar = st.number_input(
-                "Ingrese ID a eliminar",
-                min_value=1,
-                step=1
-            )
-
-            if st.button("🗑️ ELIMINAR PRONÓSTICO"):
-
-                supabase.table(
-                    "Pronosticos"
-                ).delete().eq(
-                    "id",
-                    id_eliminar
-                ).execute()
-
-                st.success(
-                    "✅ Pronóstico eliminado"
-                )
-
-
-
