@@ -677,3 +677,88 @@ elif vista == "📊 TABLA DE PUNTOS":
             tabla,
             use_container_width=True
         )
+
+# =====================================================
+# VISTA ADMINISTRAR PRONÓSTICOS
+# =====================================================
+
+elif vista == "🗑️ ADMINISTRAR PRONÓSTICOS":
+
+    st.title("🗑️ ADMINISTRAR PRONÓSTICOS")
+
+    data = supabase.table(
+        "Pronosticos"
+    ).select("*").execute()
+
+    df = pd.DataFrame(data.data)
+
+    if not df.empty:
+
+        df = df.merge(
+            partidos_df,
+            left_on="id_partido",
+            right_on="NUMERO_PARTIDO"
+        )
+
+        df["PARTIDO"] = (
+            df["EQUIPO_1"]
+            + " vs "
+            + df["EQUIPO_2"]
+        )
+
+        df["PRONOSTICO"] = (
+            df["goles_1"].astype(str)
+            + " - "
+            + df["goles_2"].astype(str)
+        )
+
+        mostrar = df[
+            [
+                "id",
+                "nombre",
+                "PARTIDO",
+                "PRONOSTICO",
+                "timestamp_registro"
+            ]
+        ]
+
+        mostrar.columns = [
+            "ID",
+            "USUARIO",
+            "PARTIDO",
+            "PRONÓSTICO",
+            "FECHA REGISTRO"
+        ]
+
+        st.dataframe(
+            mostrar,
+            use_container_width=True
+        )
+
+        ids = mostrar["ID"].tolist()
+
+        eliminar_id = st.selectbox(
+            "Seleccione ID a eliminar",
+            ids
+        )
+
+        if st.button("❌ ELIMINAR PRONÓSTICO"):
+
+            supabase.table(
+                "Pronosticos"
+            ).delete().eq(
+                "id",
+                int(eliminar_id)
+            ).execute()
+
+            st.success(
+                "✅ Pronóstico eliminado correctamente."
+            )
+
+            st.rerun()
+
+    else:
+
+        st.info(
+            "No existen pronósticos registrados."
+        )
