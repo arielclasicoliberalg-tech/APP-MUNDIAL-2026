@@ -5,7 +5,7 @@ import plotly.express as px
 from datetime import datetime
 
 # =====================================================
-# CONFIGURACIÓN
+# CONFIG
 # =====================================================
 
 st.set_page_config(
@@ -16,124 +16,95 @@ st.set_page_config(
 
 EXCEL_FILE = "MUNDIAL.xlsx"
 
-# =====================================================
-# SUPABASE
-# =====================================================
-
 SUPABASE_URL = "https://wadioikactpavpspwitz.supabase.co"
 
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhZGlvaWthY3RwYXZwc3B3aXR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NTMwNDksImV4cCI6MjA5NDQyOTA0OX0.nodjYPqIkuDKOe0d9VOzIxZmJcBZcXXQz8nrFrAR1sU"
+
+ADMIN_PASSWORD = "PIPOCHOCO"
 
 supabase = create_client(
     SUPABASE_URL,
     SUPABASE_KEY
 )
 
-ADMIN_PASSWORD = "PIPOCHOCO"
-
 # =====================================================
-# CSS
+# ESTILOS
 # =====================================================
 
 st.markdown("""
 <style>
 
-.stApp {
-    background: linear-gradient(135deg, #020617, #071226);
-    overflow: hidden;
+.stApp{
+    background: linear-gradient(135deg,#020617,#071226);
 }
 
-body::before {
-    content: "⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽";
-    position: fixed;
-    top: 8%;
-    left: -60%;
-    font-size: 90px;
-    opacity: 0.07;
-    animation: mover1 30s linear infinite;
-    z-index: 0;
-    white-space: nowrap;
+body::before{
+    content:"⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽";
+    position:fixed;
+    top:5%;
+    left:-50%;
+    font-size:100px;
+    opacity:0.05;
+    animation:mover1 25s linear infinite;
+    white-space:nowrap;
 }
 
-body::after {
-    content: "⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽";
-    position: fixed;
-    bottom: 10%;
-    right: -60%;
-    font-size: 110px;
-    opacity: 0.05;
-    animation: mover2 35s linear infinite;
-    z-index: 0;
-    white-space: nowrap;
+body::after{
+    content:"⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽";
+    position:fixed;
+    bottom:10%;
+    right:-50%;
+    font-size:120px;
+    opacity:0.05;
+    animation:mover2 35s linear infinite;
+    white-space:nowrap;
 }
 
-@keyframes mover1 {
-    0% {
-        transform: translateX(-10%);
-    }
-    100% {
-        transform: translateX(220%);
-    }
+@keyframes mover1{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(250%);}
 }
 
-@keyframes mover2 {
-    0% {
-        transform: translateX(10%);
-    }
-    100% {
-        transform: translateX(-220%);
-    }
+@keyframes mover2{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(-250%);}
 }
 
-.block-container {
-    position: relative;
-    z-index: 2;
+h1,h2,h3,h4,h5,h6,p,span,label{
+    color:white !important;
 }
 
-section[data-testid="stSidebar"] {
-    background: rgba(2,6,23,0.95);
+section[data-testid="stSidebar"]{
+    background:rgba(2,6,23,0.95);
 }
 
-h1, h2, h3, h4, h5, h6,
-p, label, span {
-    color: white !important;
+.card{
+    background:rgba(255,255,255,0.05);
+    border-radius:20px;
+    padding:25px;
+    backdrop-filter:blur(10px);
 }
 
-.card {
-    background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(12px);
-    border-radius: 20px;
-    padding: 25px;
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+.stButton>button{
+    background:linear-gradient(90deg,#2563eb,#9333ea);
+    color:white;
+    border:none;
+    border-radius:14px;
+    font-size:18px;
+    font-weight:bold;
+    padding:12px 22px;
 }
 
-.stTextInput input {
-    background-color: white !important;
-    color: black !important;
+.stButton>button:hover{
+    transform:scale(1.05);
 }
 
-.stNumberInput input {
-    background-color: white !important;
-    color: black !important;
-    font-size: 35px !important;
-    font-weight: bold !important;
-    text-align: center !important;
-}
-
-.stButton>button {
-    background: linear-gradient(90deg,#2563eb,#7c3aed);
-    color: white;
-    border-radius: 14px;
-    border: none;
-    padding: 12px 24px;
-    font-size: 18px;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-.stButton>button:hover {
-    transform: scale(1.05);
+.stNumberInput input{
+    background:white !important;
+    color:black !important;
+    font-size:35px !important;
+    font-weight:bold !important;
+    text-align:center !important;
 }
 
 </style>
@@ -143,21 +114,18 @@ p, label, span {
 # SONIDO ENTRADA
 # =====================================================
 
-st.markdown(
-    """
-    <audio autoplay>
-        <source src="https://www.soundjay.com/buttons/sounds/button-09.mp3" type="audio/mpeg">
-    </audio>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("""
+<audio autoplay>
+<source src="https://www.soundjay.com/buttons/sounds/button-09.mp3" type="audio/mpeg">
+</audio>
+""", unsafe_allow_html=True)
 
 # =====================================================
 # CARGAR EXCEL
 # =====================================================
 
 @st.cache_data
-def load_data():
+def cargar_datos():
 
     partidos = pd.read_excel(
         EXCEL_FILE,
@@ -176,13 +144,13 @@ def load_data():
     return partidos, nombres
 
 
-partidos_df, nombres_df = load_data()
+partidos_df, nombres_df = cargar_datos()
 
 # =====================================================
 # LOGIN
 # =====================================================
 
-st.sidebar.title("👤 USUARIO")
+st.sidebar.title("👤 IDENTIFICACIÓN")
 
 usuario_actual = st.sidebar.selectbox(
     "Seleccione usuario",
@@ -229,7 +197,7 @@ def calcular_puntos(pg1, pg2, rg1, rg2):
 # MENÚ
 # =====================================================
 
-opciones_menu = [
+menu = [
     "📝 LLENAR MIS PRONÓSTICOS",
     "📋 MIS PRONÓSTICOS",
     "🏆 RESULTADOS OFICIALES",
@@ -237,14 +205,11 @@ opciones_menu = [
 ]
 
 if usuario_actual.upper() == "ARIEL":
-
-    opciones_menu.append(
-        "🗑️ ADMINISTRAR PRONÓSTICOS"
-    )
+    menu.append("🗑️ ADMINISTRAR PRONÓSTICOS")
 
 vista = st.sidebar.radio(
     "Seleccione vista",
-    opciones_menu
+    menu
 )
 
 # =====================================================
@@ -312,7 +277,7 @@ if vista == "📝 LLENAR MIS PRONÓSTICOS":
 
     if st.button("💾 GUARDAR PRONÓSTICO"):
 
-        validacion = supabase.table(
+        validar = supabase.table(
             "Pronosticos"
         ).select("*").eq(
             "nombre",
@@ -322,10 +287,10 @@ if vista == "📝 LLENAR MIS PRONÓSTICOS":
             int(info["NUMERO_PARTIDO"])
         ).execute()
 
-        if len(validacion.data) > 0:
+        if len(validar.data) > 0:
 
             st.error(
-                "⚠️ Ya registraste un pronóstico."
+                "⚠️ Ya registraste un pronóstico para este partido."
             )
 
         else:
@@ -344,70 +309,62 @@ if vista == "📝 LLENAR MIS PRONÓSTICOS":
                 "timestamp_registro": timestamp
             }).execute()
 
-            st.success(
-                "✅ Pronóstico guardado."
-            )
+            st.success("✅ Pronóstico guardado.")
 
-            st.markdown(
-                """
-                <audio autoplay>
-                    <source src="https://www.soundjay.com/human/sounds/applause-8.mp3" type="audio/mpeg">
-                </audio>
-                """,
-                unsafe_allow_html=True
-            )
+            st.markdown("""
+            <audio autoplay>
+            <source src="https://www.soundjay.com/human/sounds/applause-8.mp3" type="audio/mpeg">
+            </audio>
+            """, unsafe_allow_html=True)
 
-            st.markdown(
-                """
-                <style>
+            st.markdown("""
+            <style>
 
-                .pelotas {
-                    position: fixed;
-                    top: -100px;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    pointer-events: none;
-                    z-index: 9999;
+            .pelotas{
+                position:fixed;
+                top:-100px;
+                left:0;
+                width:100%;
+                height:100%;
+                pointer-events:none;
+                z-index:9999;
+            }
+
+            .pelota{
+                position:absolute;
+                font-size:50px;
+                animation:caer 4s linear forwards;
+            }
+
+            @keyframes caer{
+                0%{
+                    transform:translateY(-100px) rotate(0deg);
+                    opacity:1;
                 }
 
-                .pelota {
-                    position: absolute;
-                    font-size: 50px;
-                    animation: caer 4s linear forwards;
+                100%{
+                    transform:translateY(120vh) rotate(720deg);
+                    opacity:0;
                 }
+            }
 
-                @keyframes caer {
-                    0% {
-                        transform: translateY(-100px) rotate(0deg);
-                        opacity: 1;
-                    }
+            </style>
 
-                    100% {
-                        transform: translateY(120vh) rotate(720deg);
-                        opacity: 0;
-                    }
-                }
+            <div class="pelotas">
+                <div class="pelota" style="left:5%; animation-delay:0s;">⚽</div>
+                <div class="pelota" style="left:15%; animation-delay:0.2s;">⚽</div>
+                <div class="pelota" style="left:25%; animation-delay:0.4s;">⚽</div>
+                <div class="pelota" style="left:35%; animation-delay:0.6s;">⚽</div>
+                <div class="pelota" style="left:45%; animation-delay:0.8s;">⚽</div>
+                <div class="pelota" style="left:55%; animation-delay:1s;">⚽</div>
+                <div class="pelota" style="left:65%; animation-delay:1.2s;">⚽</div>
+                <div class="pelota" style="left:75%; animation-delay:1.4s;">⚽</div>
+                <div class="pelota" style="left:85%; animation-delay:1.6s;">⚽</div>
+                <div class="pelota" style="left:95%; animation-delay:1.8s;">⚽</div>
+            </div>
+            """, unsafe_allow_html=True)
 
-                </style>
-
-                <div class="pelotas">
-                    <div class="pelota" style="left:5%; animation-delay:0s;">⚽</div>
-                    <div class="pelota" style="left:15%; animation-delay:0.2s;">⚽</div>
-                    <div class="pelota" style="left:25%; animation-delay:0.4s;">⚽</div>
-                    <div class="pelota" style="left:35%; animation-delay:0.6s;">⚽</div>
-                    <div class="pelota" style="left:45%; animation-delay:0.8s;">⚽</div>
-                    <div class="pelota" style="left:55%; animation-delay:1s;">⚽</div>
-                    <div class="pelota" style="left:65%; animation-delay:1.2s;">⚽</div>
-                    <div class="pelota" style="left:75%; animation-delay:1.4s;">⚽</div>
-                    <div class="pelota" style="left:85%; animation-delay:1.6s;">⚽</div>
-                    <div class="pelota" style="left:95%; animation-delay:1.8s;">⚽</div>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # =====================================================
 # VISTA 2
@@ -566,9 +523,60 @@ elif vista == "🏆 RESULTADOS OFICIALES":
                     "timestamp_registro": timestamp
                 }).execute()
 
-                st.success(
-                    "✅ Resultado guardado."
-                )
+                st.success("✅ Resultado guardado.")
+
+    else:
+
+        data = supabase.table(
+            "Resultados_Oficiales"
+        ).select("*").execute()
+
+        resultados = pd.DataFrame(data.data)
+
+        if not resultados.empty:
+
+            resultados = resultados.merge(
+                partidos_df,
+                left_on="id_partido",
+                right_on="NUMERO_PARTIDO"
+            )
+
+            resultados["PARTIDO"] = (
+                resultados["EQUIPO_1"]
+                + " vs "
+                + resultados["EQUIPO_2"]
+            )
+
+            resultados["RESULTADO"] = (
+                resultados["goles_1"].astype(str)
+                + " - "
+                + resultados["goles_2"].astype(str)
+            )
+
+            mostrar = resultados[
+                [
+                    "PARTIDO",
+                    "RESULTADO",
+                    "timestamp_registro"
+                ]
+            ]
+
+            mostrar.columns = [
+                "PARTIDO",
+                "RESULTADO OFICIAL",
+                "FECHA REGISTRO"
+            ]
+
+            st.dataframe(
+                mostrar,
+                use_container_width=True
+            )
+
+        else:
+
+            st.info(
+                "Aún no existen resultados oficiales registrados."
+            )
 
 # =====================================================
 # VISTA 4
