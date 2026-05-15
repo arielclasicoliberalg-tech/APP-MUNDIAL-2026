@@ -802,19 +802,4 @@ elif vista == "🗑️ ADMINISTRAR PRONÓSTICOS":
                 )
 
 
-# IMPORTANTE
 
-REEMPLAZA:
-
-```python
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhZGlvaWthY3RwYXZwc3B3aXR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NTMwNDksImV4cCI6MjA5NDQyOTA0OX0.nodjYPqIkuDKOe0d9VOzIxZmJcBZcXXQz8nrFrAR1sU"
-```
-
-por tu key real de Supabase.
-
-Luego:
-
-1. Guarda app.py
-2. Súbelo a GitHub
-3. Espera el redeploy automático
-4. Listo
