@@ -3,7 +3,6 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from datetime import datetime
-import base64
 
 # =====================================================
 # CONFIG
@@ -17,11 +16,9 @@ st.set_page_config(
 
 EXCEL_FILE = "MUNDIAL.xlsx"
 
-IMAGE_BACKGROUND = "Gemini_Generated_Image_yb9b8yyb9b8yyb9b.png"
-
 SUPABASE_URL = "https://wadioikactpavpspwitz.supabase.co"
 
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhZGlvaWthY3RwYXZwc3B3aXR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NTMwNDksImV4cCI6MjA5NDQyOTA0OX0.nodjYPqIkuDKOe0d9VOzIxZmJcBZcXXQz8nrFrAR1sUSE_KEY"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhZGlvaWthY3RwYXZwc3B3aXR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NTMwNDksImV4cCI6MjA5NDQyOTA0OX0.nodjYPqIkuDKOe0d9VOzIxZmJcBZcXXQz8nrFrAR1sU"
 
 ADMIN_PASSWORD = "PIPOCHOCO"
 
@@ -31,130 +28,84 @@ supabase = create_client(
 )
 
 # =====================================================
-# FUNCION IMAGEN BASE64
-# =====================================================
-
-def get_base64_image(image_path):
-    with open(image_path, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode()
-
-img_base64 = get_base64_image(IMAGE_BACKGROUND)
-
-# =====================================================
 # ESTILOS
 # =====================================================
 
-st.markdown(f"""
+st.markdown("""
 <style>
 
-/* =========================
-FONDO PRINCIPAL
-========================= */
+.stApp{
+    background: linear-gradient(135deg,#020617,#071226);
+}
 
-.stApp {{
-    background:
-        linear-gradient(
-            rgba(0,0,0,0.80),
-            rgba(0,0,0,0.85)
-        ),
-        url("data:image/png;base64,{img_base64}");
+body::before{
+    content:"⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽";
+    position:fixed;
+    top:5%;
+    left:-50%;
+    font-size:100px;
+    opacity:0.05;
+    animation:mover1 25s linear infinite;
+    white-space:nowrap;
+}
 
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-}}
+body::after{
+    content:"⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽ ⚽";
+    position:fixed;
+    bottom:10%;
+    right:-50%;
+    font-size:120px;
+    opacity:0.05;
+    animation:mover2 35s linear infinite;
+    white-space:nowrap;
+}
 
-/* =========================
-TEXTOS
-========================= */
+@keyframes mover1{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(250%);}
+}
 
-h1,h2,h3,h4,h5,h6,p,span,label,div {{
+@keyframes mover2{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(-250%);}
+}
+
+h1,h2,h3,h4,h5,h6,p,span,label{
     color:white !important;
-}}
+}
 
-/* =========================
-SIDEBAR
-========================= */
+section[data-testid="stSidebar"]{
+    background:rgba(2,6,23,0.95);
+}
 
-section[data-testid="stSidebar"] {{
-    background: rgba(2,6,23,0.92);
-    border-right: 1px solid rgba(255,255,255,0.1);
-}}
+.card{
+    background:rgba(255,255,255,0.05);
+    border-radius:20px;
+    padding:25px;
+    backdrop-filter:blur(10px);
+}
 
-/* =========================
-CARDS
-========================= */
+.stButton>button{
+    background:linear-gradient(90deg,#2563eb,#9333ea);
+    color:white;
+    border:none;
+    border-radius:14px;
+    font-size:18px;
+    font-weight:bold;
+    padding:12px 22px;
+}
 
-.card {{
-    background: rgba(255,255,255,0.08);
-    border-radius: 25px;
-    padding: 25px;
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 0 25px rgba(0,0,0,0.5);
-}}
+.stButton>button:hover{
+    transform:scale(1.05);
+}
 
-/* =========================
-BOTONES
-========================= */
-
-.stButton>button {{
-    background: linear-gradient(90deg,#2563eb,#9333ea);
-    color: white;
-    border: none;
-    border-radius: 15px;
-    font-size: 18px;
-    font-weight: bold;
-    padding: 12px 25px;
-    transition: 0.3s;
-    width: 100%;
-}}
-
-.stButton>button:hover {{
-    transform: scale(1.03);
-    box-shadow: 0 0 20px rgba(147,51,234,0.6);
-}}
-
-/* =========================
-INPUTS
-========================= */
-
-.stNumberInput input {{
-    background: rgba(255,255,255,0.95) !important;
-    color: black !important;
-    font-size: 35px !important;
-    font-weight: bold !important;
-    text-align: center !important;
-    border-radius: 15px !important;
-}}
-
-/* =========================
-TABLAS
-========================= */
-
-[data-testid="stDataFrame"] {{
-    background: rgba(255,255,255,0.05);
-    border-radius: 20px;
-    padding: 10px;
-}}
-
-/* =========================
-SELECTBOX
-========================= */
-
-.stSelectbox div[data-baseweb="select"] {{
-    background-color: rgba(255,255,255,0.08);
-    border-radius: 12px;
-}}
-
-/* =========================
-PLOTLY
-========================= */
-
-.js-plotly-plot {{
-    border-radius: 20px;
-    overflow: hidden;
-}}
+.stNumberInput input{
+    background:white !important;
+    color:black !important;
+    font-size:35px !important;
+    font-weight:bold !important;
+    text-align:center !important;
+}
 
 </style>
 """, unsafe_allow_html=True)
@@ -192,6 +143,7 @@ def cargar_datos():
 
     return partidos, nombres
 
+
 partidos_df, nombres_df = cargar_datos()
 
 # =====================================================
@@ -222,6 +174,7 @@ def obtener_partidos(fecha):
     )
 
     return df
+
 
 def calcular_puntos(pg1, pg2, rg1, rg2):
 
@@ -265,7 +218,7 @@ vista = st.sidebar.radio(
 
 if vista == "📝 LLENAR MIS PRONÓSTICOS":
 
-    st.title("⚽ PRONÓSTICOS MUNDIAL")
+    st.title("📝 LLENAR MIS PRONÓSTICOS")
 
     fechas = sorted(
         partidos_df["FECHA"].unique()
@@ -358,6 +311,59 @@ if vista == "📝 LLENAR MIS PRONÓSTICOS":
 
             st.success("✅ Pronóstico guardado.")
 
+            st.markdown("""
+            <audio autoplay>
+            <source src="https://www.soundjay.com/human/sounds/applause-8.mp3" type="audio/mpeg">
+            </audio>
+            """, unsafe_allow_html=True)
+
+            st.markdown("""
+            <style>
+
+            .pelotas{
+                position:fixed;
+                top:-100px;
+                left:0;
+                width:100%;
+                height:100%;
+                pointer-events:none;
+                z-index:9999;
+            }
+
+            .pelota{
+                position:absolute;
+                font-size:50px;
+                animation:caer 4s linear forwards;
+            }
+
+            @keyframes caer{
+                0%{
+                    transform:translateY(-100px) rotate(0deg);
+                    opacity:1;
+                }
+
+                100%{
+                    transform:translateY(120vh) rotate(720deg);
+                    opacity:0;
+                }
+            }
+
+            </style>
+
+            <div class="pelotas">
+                <div class="pelota" style="left:5%; animation-delay:0s;">⚽</div>
+                <div class="pelota" style="left:15%; animation-delay:0.2s;">⚽</div>
+                <div class="pelota" style="left:25%; animation-delay:0.4s;">⚽</div>
+                <div class="pelota" style="left:35%; animation-delay:0.6s;">⚽</div>
+                <div class="pelota" style="left:45%; animation-delay:0.8s;">⚽</div>
+                <div class="pelota" style="left:55%; animation-delay:1s;">⚽</div>
+                <div class="pelota" style="left:65%; animation-delay:1.2s;">⚽</div>
+                <div class="pelota" style="left:75%; animation-delay:1.4s;">⚽</div>
+                <div class="pelota" style="left:85%; animation-delay:1.6s;">⚽</div>
+                <div class="pelota" style="left:95%; animation-delay:1.8s;">⚽</div>
+            </div>
+            """, unsafe_allow_html=True)
+
     st.markdown("</div>", unsafe_allow_html=True)
 
 # =====================================================
@@ -436,56 +442,141 @@ elif vista == "🏆 RESULTADOS OFICIALES":
 
     st.title("🏆 RESULTADOS OFICIALES")
 
-    data = supabase.table(
-        "Resultados_Oficiales"
-    ).select("*").execute()
+    if usuario_actual.upper() == "ARIEL":
 
-    resultados = pd.DataFrame(data.data)
-
-    if not resultados.empty:
-
-        resultados = resultados.merge(
-            partidos_df,
-            left_on="id_partido",
-            right_on="NUMERO_PARTIDO"
+        password = st.text_input(
+            "Ingrese contraseña",
+            type="password"
         )
 
-        resultados["PARTIDO"] = (
-            resultados["EQUIPO_1"]
-            + " vs "
-            + resultados["EQUIPO_2"]
-        )
+        if password == ADMIN_PASSWORD:
 
-        resultados["RESULTADO"] = (
-            resultados["goles_1"].astype(str)
-            + " - "
-            + resultados["goles_2"].astype(str)
-        )
+            fechas = sorted(
+                partidos_df["FECHA"].unique()
+            )
 
-        mostrar = resultados[
-            [
+            fecha = st.selectbox(
+                "FECHA",
+                fechas
+            )
+
+            partidos_fecha = obtener_partidos(fecha)
+
+            partido = st.selectbox(
                 "PARTIDO",
-                "RESULTADO",
-                "timestamp_registro"
-            ]
-        ]
+                partidos_fecha["PARTIDO"].tolist()
+            )
 
-        mostrar.columns = [
-            "PARTIDO",
-            "RESULTADO OFICIAL",
-            "FECHA REGISTRO"
-        ]
+            info = partidos_fecha[
+                partidos_fecha["PARTIDO"] == partido
+            ].iloc[0]
 
-        st.dataframe(
-            mostrar,
-            use_container_width=True
-        )
+            col1, col2 = st.columns(2)
+
+            with col1:
+
+                st.markdown(
+                    f"<h1 style='text-align:center'>{info['EQUIPO_1']}</h1>",
+                    unsafe_allow_html=True
+                )
+
+                g1 = st.number_input(
+                    "",
+                    min_value=0,
+                    step=1,
+                    key="of1"
+                )
+
+            with col2:
+
+                st.markdown(
+                    f"<h1 style='text-align:center'>{info['EQUIPO_2']}</h1>",
+                    unsafe_allow_html=True
+                )
+
+                g2 = st.number_input(
+                    "",
+                    min_value=0,
+                    step=1,
+                    key="of2"
+                )
+
+            if st.button("💾 GUARDAR RESULTADO"):
+
+                supabase.table(
+                    "Resultados_Oficiales"
+                ).delete().eq(
+                    "id_partido",
+                    int(info["NUMERO_PARTIDO"])
+                ).execute()
+
+                timestamp = datetime.now().strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                )
+
+                supabase.table(
+                    "Resultados_Oficiales"
+                ).insert({
+                    "id_partido": int(info["NUMERO_PARTIDO"]),
+                    "goles_1": g1,
+                    "goles_2": g2,
+                    "timestamp_registro": timestamp
+                }).execute()
+
+                st.success("✅ Resultado guardado.")
 
     else:
 
-        st.info(
-            "Aún no existen resultados oficiales registrados."
-        )
+        data = supabase.table(
+            "Resultados_Oficiales"
+        ).select("*").execute()
+
+        resultados = pd.DataFrame(data.data)
+
+        if not resultados.empty:
+
+            resultados = resultados.merge(
+                partidos_df,
+                left_on="id_partido",
+                right_on="NUMERO_PARTIDO"
+            )
+
+            resultados["PARTIDO"] = (
+                resultados["EQUIPO_1"]
+                + " vs "
+                + resultados["EQUIPO_2"]
+            )
+
+            resultados["RESULTADO"] = (
+                resultados["goles_1"].astype(str)
+                + " - "
+                + resultados["goles_2"].astype(str)
+            )
+
+            mostrar = resultados[
+                [
+                    "PARTIDO",
+                    "RESULTADO",
+                    "timestamp_registro"
+                ]
+            ]
+
+            mostrar.columns = [
+                "PARTIDO",
+                "RESULTADO OFICIAL",
+                "FECHA REGISTRO"
+            ]
+
+            st.dataframe(
+                mostrar,
+                use_container_width=True
+            )
+
+        else:
+
+            st.info(
+                "Aún no existen resultados oficiales registrados."
+            )
 
 # =====================================================
 # VISTA 4
@@ -570,8 +661,8 @@ elif vista == "📊 TABLA DE PUNTOS":
         )
 
         fig.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="#071226",
+            plot_bgcolor="#071226",
             font_color="white",
             height=600,
             showlegend=False
@@ -588,7 +679,7 @@ elif vista == "📊 TABLA DE PUNTOS":
         )
 
 # =====================================================
-# ADMINISTRAR PRONÓSTICOS
+# VISTA ADMINISTRAR PRONÓSTICOS
 # =====================================================
 
 elif vista == "🗑️ ADMINISTRAR PRONÓSTICOS":
