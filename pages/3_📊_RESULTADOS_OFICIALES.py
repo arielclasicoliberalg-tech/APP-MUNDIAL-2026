@@ -88,7 +88,7 @@ with col2:
     <div style='display:flex;
                 justify-content:center;
                 align-items:center;
-                height:300px;'>
+                height:150px;'>
         <p style='font-size:80px; font-weight:bold; margin:0;'>
             -
         </p>
