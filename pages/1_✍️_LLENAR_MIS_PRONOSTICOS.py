@@ -96,7 +96,7 @@ label[data-testid="stWidgetLabel"] p {
             st.markdown("""
 <style>
 div[data-testid="stNumberInput"] label p {
-    font-size: 30px !important;
+    font-size: 40px !important;
     font-weight: bold;
 }
 </style>
