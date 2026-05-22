@@ -96,9 +96,8 @@ label[data-testid="stWidgetLabel"] p {
             with st.form(key=f"form_{partido['id']}"):
                 st.markdown("""
 <style>
-div[data-testid="stNumberInput"] label p {
-    font-size: 40px !important;
-    font-weight: bold;
+div[data-testid="stNumberInput"] p {
+    font-size: 30px !important;
 }
 </style>
 """, unsafe_allow_html=True)
