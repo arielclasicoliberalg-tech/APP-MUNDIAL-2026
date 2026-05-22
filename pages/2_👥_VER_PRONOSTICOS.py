@@ -57,7 +57,7 @@ else:
     
     partidos_dia = [p for p in partidos_data if p['fecha'] == fecha_sel]
     st.markdown("""
-    <h1 style='font-size:45px; margin-bottom:-15px;'>
+    <h1 style='font-size:28px; margin-bottom:-15px;'>
     🏟️ 2. Selecciona el partido
     </h1>
     """, unsafe_allow_html=True)
