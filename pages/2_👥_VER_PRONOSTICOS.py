@@ -43,24 +43,17 @@ if not partidos_data:
     st.info("No hay partidos registrados aún.")
 else:
     fechas = sorted(list(set([p['fecha'] for p in partidos_data])))
-    # AUMENTAR TAMAÑO DE LETRAS
     st.markdown("""
-    <style>
-
-    /* TITULOS */
-    .stSelectbox label {
-       font-size: 35px !important;
-       font-weight: bold !important;
-    }
-
-    /* OPCIONES Y TEXTO */
-    div[data-baseweb="select"] * {
-       font-size: 30px !important;
-    }
-
-    </style>
+    <h1 style='font-size:45px; margin-bottom:-15px;'>
+    📅 1. Selecciona la fecha
+    </h1>
     """, unsafe_allow_html=True)
-    fecha_sel = st.selectbox("📅 1. Selecciona la fecha", fechas)
+
+    fecha_sel = st.selectbox(
+    "",
+    fechas,
+    label_visibility="collapsed"
+    )
     
     partidos_dia = [p for p in partidos_data if p['fecha'] == fecha_sel]
     partido_sel = st.selectbox("🏟️ 2. Selecciona el partido", [f"{p['equipo_1']} vs {p['equipo_2']}" for p in partidos_dia])
