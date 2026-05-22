@@ -1,3 +1,4 @@
+
 import streamlit as st
 import base64
 from src.database import supabase
@@ -19,6 +20,17 @@ def set_background(image_file):
             background-repeat: no-repeat;
             background-attachment: fixed;
         }}
+        
+        [data-testid="stSidebarNavLink"] span {{
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: unset !important;
+            word-break: break-word !important;
+        }}
+        [data-testid="stSidebarNavLink"] {{
+            height: auto !important;
+            padding: 8px 12px !important;
+        }}
         </style>
         """
         st.markdown(page_bg_img, unsafe_allow_html=True)
@@ -27,22 +39,7 @@ def set_background(image_file):
 
 # --- CONFIGURACIÓN ---
 st.set_page_config(page_title="App del Mundial 2026", layout="wide", page_icon="⚽")
-
-# ← AGREGA ESTO AQUÍ:
-st.markdown("""
-    <style>
-    [data-testid="stSidebarNavLink"] span {
-        white-space: normal !important;
-        overflow: visible !important;
-        text-overflow: unset !important;
-        word-break: break-word !important;
-    }
-    [data-testid="stSidebarNavLink"] {
-        height: auto !important;
-        padding: 8px 12px !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
+set_background("assets/fondo.png")
 
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
@@ -90,7 +87,6 @@ if not st.session_state["authenticated"]:
                 try:
                     auth = supabase.auth.sign_up({"email": new_email, "password": new_pass})
                     if hasattr(auth, 'user') and auth.user:
-                        # Usamos upsert para evitar error 23505
                         supabase.table("profiles").upsert({
                             "id": auth.user.id, 
                             "nombre": new_name, 
