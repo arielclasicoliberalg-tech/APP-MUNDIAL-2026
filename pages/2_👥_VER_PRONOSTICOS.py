@@ -33,7 +33,7 @@ if not st.session_state.get("authenticated", False):
     st.switch_page("app.py")
 
 # --- DISEÑO ---
-st.title("👥 PRONÓSTICOS DE LA COMUNIDAD")
+st.title("👥 PRONÓSTICOS ENVIADOS")
 st.markdown("---")
 
 # --- OBTENCIÓN DE DATOS ---
