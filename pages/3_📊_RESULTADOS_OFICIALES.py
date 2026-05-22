@@ -74,7 +74,7 @@ else:
 with col1:
     st.markdown(f"""
     <div style='text-align:center;'>
-        <p style='font-size:35px; font-weight:bold;'>
+        <p style='font-size:30px; font-weight:bold;'>
             {partido['equipo_1']}
         </p>
         <p style='font-size:90px; margin-top:-20px;'>
@@ -98,7 +98,7 @@ with col2:
 with col3:
     st.markdown(f"""
     <div style='text-align:center;'>
-        <p style='font-size:35px; font-weight:bold;'>
+        <p style='font-size:30px; font-weight:bold;'>
             {partido['equipo_2']}
         </p>
         <p style='font-size:90px; margin-top:-20px;'>
