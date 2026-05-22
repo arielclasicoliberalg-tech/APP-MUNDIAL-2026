@@ -34,7 +34,7 @@ if st.session_state.get("role") != "admin":
 st.title("⚙️ PANEL DE ADMINISTRADOR")
 st.markdown("---")
 
-tab1, tab2 = st.tabs(["🗑️ Gestión de Pronósticos", "⚽ Cargar Resultados"])
+tab1, tab2, tab3 = st.tabs(["🗑️ Gestión de Pronósticos", "⚽ Cargar Resultados", "🔑 Resetear Contraseña"])
 
 # --- TAB 1: GESTIÓN DE PRONÓSTICOS (ELIMINACIÓN LÓGICA) ---
 with tab1:
@@ -51,7 +51,6 @@ with tab1:
         partido_sel = st.selectbox("2. Selecciona Partido", [f"{p['equipo_1']} vs {p['equipo_2']}" for p in partidos_dia], key="adm_p1")
         partido_id = next(p['id'] for p in partidos_dia if f"{p['equipo_1']} vs {p['equipo_2']}" == partido_sel)
         
-        # Obtenemos solo los activos
         res = supabase.table("pronosticos").select("id, goles_1, goles_2, profiles(nombre)").eq("partido_id", partido_id).eq("activo", True).execute()
         
         if res.data:
@@ -87,16 +86,49 @@ with tab2:
         
         if st.button("Guardar Resultado y Finalizar", type="primary"):
             try:
-                # Al actualizar a 'finalizado', el Trigger en Supabase calculará los puntos automáticamente
                 supabase.table("partidos").update({
                     "goles_1": g1, 
                     "goles_2": g2, 
                     "estado": "finalizado"
                 }).eq("id", partido_obj['id']).execute()
-                
                 st.success(f"Resultado guardado: {partido_obj['equipo_1']} {g1} - {g2} {partido_obj['equipo_2']}.")
                 st.rerun()
             except Exception as e:
                 st.error(f"Error al actualizar el partido: {e}")
     else:
         st.success("¡Todos los partidos han sido procesados!")
+
+# --- TAB 3: RESETEAR CONTRASEÑA ---
+with tab3:
+    st.subheader("🔑 Cambiar contraseña de un usuario")
+    st.info("Busca al usuario por su apodo y asígnale una contraseña temporal.")
+
+    try:
+        usuarios = supabase.table("profiles").select("nombre, email_asociado").execute().data
+    except Exception as e:
+        st.error("Error al cargar usuarios.")
+        usuarios = []
+
+    if usuarios:
+        nombres = [u['nombre'] for u in usuarios]
+        apodo_sel = st.selectbox("Selecciona el usuario", nombres, key="reset_user")
+        nueva_clave = st.text_input("Nueva contraseña temporal", type="password", key="reset_pass")
+
+        if st.button("🔑 Cambiar contraseña", type="primary"):
+            if not nueva_clave:
+                st.warning("Escribe una contraseña.")
+            elif len(nueva_clave) < 6:
+                st.error("Mínimo 6 caracteres.")
+            else:
+                try:
+                    # Buscar el email del usuario seleccionado
+                    email = next(u['email_asociado'] for u in usuarios if u['nombre'] == apodo_sel)
+                    # Buscar el user_id en auth
+                    user_id = next(u['id'] for u in supabase.table("profiles").select("id, nombre").eq("nombre", apodo_sel).execute().data)
+                    # Cambiar contraseña usando admin API
+                    supabase.auth.admin.update_user_by_id(user_id, {"password": nueva_clave})
+                    st.success(f"✅ Contraseña de **{apodo_sel}** actualizada. Avísale que su nueva clave es la que escribiste.")
+                except Exception as e:
+                    st.error(f"Error al cambiar contraseña: {e}")
+    else:
+        st.info("No hay usuarios registrados.")
