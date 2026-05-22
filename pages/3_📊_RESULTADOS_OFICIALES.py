@@ -69,33 +69,43 @@ else:
     # Creamos un diseño atractivo para el marcador
     col1, col2, col3 = st.columns([1, 0.5, 1])
     
-    col1.markdown(f"""
+    col1, col2, col3 = st.columns([1,0.3,1])
+
+with col1:
+    st.markdown(f"""
     <div style='text-align:center;'>
-        <p style='font-size:35px; font-weight:bold; margin-bottom:0;'>
+        <p style='font-size:35px; font-weight:bold;'>
             {partido['equipo_1']}
         </p>
-        <p style='font-size:70px; margin-top:0;'>
+        <p style='font-size:90px; margin-top:-20px;'>
             {partido['goles_1']}
         </p>
     </div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-col2.markdown("""
-    <h1 style='text-align:center; margin-top:60px;'>
-        -
-    </h1>
-""", unsafe_allow_html=True)
+with col2:
+    st.markdown("""
+    <div style='display:flex;
+                justify-content:center;
+                align-items:center;
+                height:300px;'>
+        <p style='font-size:80px; font-weight:bold; margin:0;'>
+            -
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
-col3.markdown(f"""
+with col3:
+    st.markdown(f"""
     <div style='text-align:center;'>
-        <p style='font-size:35px; font-weight:bold; margin-bottom:0;'>
+        <p style='font-size:35px; font-weight:bold;'>
             {partido['equipo_2']}
         </p>
-        <p style='font-size:70px; margin-top:0;'>
+        <p style='font-size:90px; margin-top:-20px;'>
             {partido['goles_2']}
         </p>
     </div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
     
     # --- SE HA ELIMINADO EL CÓDIGO DE LA TABLA AQUÍ ---
 
