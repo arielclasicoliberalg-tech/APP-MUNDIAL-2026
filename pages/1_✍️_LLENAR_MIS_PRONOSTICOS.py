@@ -129,4 +129,3 @@ div[data-testid="stNumberInput"] p {
                         st.error(f"Error al guardar en la base de datos: {e}")
 
 st.sidebar.markdown("---")
-st.sidebar.info("Puedes editar tus pronósticos hasta antes del inicio del partido.")
