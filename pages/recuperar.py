@@ -38,7 +38,10 @@ else:
             st.warning("Ingresa tu correo.")
         else:
             try:
-                supabase.auth.reset_password_email(email)
+                supabase.auth.reset_password_email(
+                    email,
+                    options={"redirect_to": "https://app-mundial-2026.streamlit.app/recuperar"}
+                )
                 st.success("✅ Revisa tu correo y haz clic en el link que te enviamos.")
             except Exception as e:
                 st.error(f"Error: {e}")
