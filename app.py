@@ -20,31 +20,17 @@ def set_background(image_file):
             background-repeat: no-repeat;
             background-attachment: fixed;
         }}
-        
-        /* Sidebar más ancho */
-        [data-testid="stSidebar"] {{
-            min-width: 220px !important;
-            max-width: 260px !important;
+
+        /* Sidebar con scroll */
+        [data-testid="stSidebar"] > div {{
+            overflow-y: auto !important;
+            overflow-x: auto !important;
         }}
 
-        /* Texto del menú en múltiples líneas */
         [data-testid="stSidebarNavLink"] {{
             height: auto !important;
-            padding: 10px 16px !important;
-            white-space: normal !important;
-        }}
-        [data-testid="stSidebarNavLink"] span {{
-            white-space: normal !important;
-            overflow: visible !important;
-            text-overflow: unset !important;
-            word-break: break-word !important;
-            line-height: 1.4 !important;
-            font-size: 13px !important;
-        }}
-
-        /* Separación entre items del menú */
-        [data-testid="stSidebarNavItems"] li {{
-            margin-bottom: 4px !important;
+            padding: 6px 8px !important;
+            white-space: nowrap !important;
         }}
         </style>
         """
