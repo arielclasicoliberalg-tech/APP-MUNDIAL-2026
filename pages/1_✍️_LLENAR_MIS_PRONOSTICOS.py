@@ -40,7 +40,7 @@ if "user_id" not in st.session_state:
 
 # --- DISEÑO ---
 st.title("⚽ MUNDIAL 2026")
-st.markdown("### ✍️ LLENAR")
+st.markdown("### ✍️ LLENAR MIS PRONÓSTICOS")
 
 # --- OBTENCIÓN DE DATOS ---
 try:
