@@ -55,6 +55,14 @@ if not partidos_data:
 else:
     # 1. Selección de Fecha
     fechas = sorted(list(set([p['fecha'] for p in partidos_data])))
+    st.markdown("""
+<style>
+label[data-testid="stWidgetLabel"] p {
+    font-size: 28px !important;
+    font-weight: bold;
+}
+</style>
+""", unsafe_allow_html=True)
     fecha_sel = st.selectbox("📅 1. Selecciona la fecha", fechas)
     
     # 2. Filtrado y Selección de Partido
