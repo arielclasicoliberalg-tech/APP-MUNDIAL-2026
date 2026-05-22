@@ -69,9 +69,33 @@ else:
     # Creamos un diseño atractivo para el marcador
     col1, col2, col3 = st.columns([1, 0.5, 1])
     
-    col1.metric(partido['equipo_1'], partido['goles_1'])
-    col2.markdown("<h2 style='text-align: center; margin-top: 20px;'>-</h2>", unsafe_allow_html=True)
-    col3.metric(partido['equipo_2'], partido['goles_2'])
+    col1.markdown(f"""
+    <div style='text-align:center;'>
+        <p style='font-size:35px; font-weight:bold; margin-bottom:0;'>
+            {partido['equipo_1']}
+        </p>
+        <p style='font-size:70px; margin-top:0;'>
+            {partido['goles_1']}
+        </p>
+    </div>
+""", unsafe_allow_html=True)
+
+col2.markdown("""
+    <h1 style='text-align:center; margin-top:60px;'>
+        -
+    </h1>
+""", unsafe_allow_html=True)
+
+col3.markdown(f"""
+    <div style='text-align:center;'>
+        <p style='font-size:35px; font-weight:bold; margin-bottom:0;'>
+            {partido['equipo_2']}
+        </p>
+        <p style='font-size:70px; margin-top:0;'>
+            {partido['goles_2']}
+        </p>
+    </div>
+""", unsafe_allow_html=True)
     
     # --- SE HA ELIMINADO EL CÓDIGO DE LA TABLA AQUÍ ---
 
