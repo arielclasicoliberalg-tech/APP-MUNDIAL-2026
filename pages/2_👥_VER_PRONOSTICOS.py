@@ -44,7 +44,7 @@ if not partidos_data:
 else:
     fechas = sorted(list(set([p['fecha'] for p in partidos_data])))
     st.markdown("""
-    <h1 style='font-size:45px; margin-bottom:-15px;'>
+    <h1 style='font-size:30px; margin-bottom:-15px;'>
     📅 1. Selecciona la fecha
     </h1>
     """, unsafe_allow_html=True)
