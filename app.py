@@ -43,36 +43,12 @@ set_background("assets/fondo.png")
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
 
-# --- DETECTAR SI VIENE DE LINK DE RECUPERACIÓN ---
-params = st.query_params
-if "type" in params and params["type"] == "recovery":
-    st.title("🔐 Restablecer Contraseña")
-    st.markdown("---")
-    nueva_pass = st.text_input("Nueva contraseña", type="password", key="new_pass_1")
-    confirmar_pass = st.text_input("Confirmar contraseña", type="password", key="new_pass_2")
-    
-    if st.button("Guardar nueva contraseña", type="primary"):
-        if not nueva_pass or not confirmar_pass:
-            st.warning("Completa ambos campos.")
-        elif nueva_pass != confirmar_pass:
-            st.error("Las contraseñas no coinciden.")
-        elif len(nueva_pass) < 6:
-            st.error("La contraseña debe tener al menos 6 caracteres.")
-        else:
-            try:
-                supabase.auth.update_user({"password": nueva_pass})
-                st.success("✅ Contraseña actualizada correctamente. Ya puedes iniciar sesión.")
-                st.query_params.clear()
-            except Exception as e:
-                st.error(f"Error al actualizar: {e}")
-    st.stop()
-
 # --- LÓGICA DE AUTENTICACIÓN ---
 if not st.session_state["authenticated"]:
     st.title("⚽ APP DEL MUNDIAL 2026")
     st.markdown("---")
     
-    tab1, tab2, tab3 = st.tabs(["🔑 Iniciar sesión", "📝 Registro", "🔄 Recuperar Contraseña"])
+    tab1, tab2 = st.tabs(["🔑 Iniciar sesión", "📝 Registro"])
 
     with tab1: # LOGIN
         st.subheader("Acceder con tu Apodo")
@@ -121,16 +97,6 @@ if not st.session_state["authenticated"]:
                         st.error("No se pudo crear la cuenta.")
                 except Exception as e:
                     st.error(f"Error al registrar: {e}")
-
-    with tab3: # RECUPERAR
-        st.subheader("Recuperar Contraseña")
-        rec_email = st.text_input("Ingresa tu correo registrado", key="rec_email")
-        if st.button("Enviar instrucciones"):
-            try:
-                supabase.auth.reset_password_email(rec_email)
-                st.success("✅ Revisa tu correo y haz clic en el link para restablecer tu contraseña.")
-            except Exception as e:
-                st.error(f"Error: {e}")
     st.stop()
 
 # --- ZONA AUTENTICADA ---
