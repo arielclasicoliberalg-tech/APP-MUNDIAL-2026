@@ -89,9 +89,7 @@ label[data-testid="stWidgetLabel"] p {
             .execute().data
         
         if existe:
-            st.warning("✅ Ya tienes un pronóstico activo para este partido.")
-            if st.button("🔄 Refrescar"):
-                st.rerun()
+            st.warning("✅ Pronóstico guardado para este partido.")
         else:
             with st.form(key=f"form_{partido['id']}"):
                 st.markdown("""
