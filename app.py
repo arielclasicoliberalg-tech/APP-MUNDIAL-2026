@@ -1,4 +1,3 @@
-
 import streamlit as st
 import base64
 from src.database import supabase
@@ -20,17 +19,16 @@ def set_background(image_file):
             background-repeat: no-repeat;
             background-attachment: fixed;
         }}
-
-        /* Sidebar con scroll */
-        [data-testid="stSidebar"] > div {{
-            overflow-y: auto !important;
-            overflow-x: auto !important;
+        
+        [data-testid="stSidebarNavLink"] span {{
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: unset !important;
+            word-break: break-word !important;
         }}
-
         [data-testid="stSidebarNavLink"] {{
             height: auto !important;
-            padding: 6px 8px !important;
-            white-space: nowrap !important;
+            padding: 8px 12px !important;
         }}
         </style>
         """
