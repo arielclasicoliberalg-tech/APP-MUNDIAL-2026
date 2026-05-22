@@ -93,7 +93,8 @@ label[data-testid="stWidgetLabel"] p {
             if st.button("🔄 Refrescar"):
                 st.rerun()
         else:
-            st.markdown("""
+            with st.form(key=f"form_{partido['id']}"):
+                st.markdown("""
 <style>
 div[data-testid="stNumberInput"] label p {
     font-size: 40px !important;
@@ -101,7 +102,6 @@ div[data-testid="stNumberInput"] label p {
 }
 </style>
 """, unsafe_allow_html=True)
-            with st.form(key=f"form_{partido['id']}"):
                 c1, c2, c3 = st.columns([1, 0.5, 1])
                 g1 = c1.number_input(f"Goles {partido['equipo_1']}", min_value=0, max_value=20, step=1)
                 c2.markdown("<br><h2 style='text-align: center;'>vs</h2>", unsafe_allow_html=True)
