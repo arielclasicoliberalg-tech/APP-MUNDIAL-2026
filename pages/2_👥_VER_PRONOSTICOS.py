@@ -42,6 +42,19 @@ partidos_data = supabase.table("partidos").select("*").execute().data
 if not partidos_data:
     st.info("No hay partidos registrados aún.")
 else:
+    # --- AUMENTAR TAMAÑO DE LETRA DE LOS SELECTBOX ---
+st.markdown("""
+<style>
+div[data-baseweb="select"] > div {
+    font-size: 28px !important;
+}
+
+label {
+    font-size: 30px !important;
+    font-weight: bold !important;
+}
+</style>
+""", unsafe_allow_html=True)
     fechas = sorted(list(set([p['fecha'] for p in partidos_data])))
     fecha_sel = st.selectbox("📅 1. Selecciona la fecha", fechas)
     
