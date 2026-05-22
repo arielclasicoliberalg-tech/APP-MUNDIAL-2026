@@ -56,7 +56,17 @@ else:
     )
     
     partidos_dia = [p for p in partidos_data if p['fecha'] == fecha_sel]
-    partido_sel = st.selectbox("🏟️ 2. Selecciona el partido", [f"{p['equipo_1']} vs {p['equipo_2']}" for p in partidos_dia])
+    st.markdown("""
+    <h1 style='font-size:45px; margin-bottom:-15px;'>
+    🏟️ 2. Selecciona el partido
+    </h1>
+    """, unsafe_allow_html=True)
+
+    partido_sel = st.selectbox(
+    "",
+    [f"{p['equipo_1']} vs {p['equipo_2']}" for p in partidos_dia],
+    label_visibility="collapsed"
+)
     partido = next(p for p in partidos_dia if f"{p['equipo_1']} vs {p['equipo_2']}" == partido_sel)
 
     st.markdown("---")
