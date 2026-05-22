@@ -27,7 +27,22 @@ def set_background(image_file):
 
 # --- CONFIGURACIÓN ---
 st.set_page_config(page_title="App del Mundial 2026", layout="wide", page_icon="⚽")
-set_background("assets/fondo.png")
+
+# ← AGREGA ESTO AQUÍ:
+st.markdown("""
+    <style>
+    [data-testid="stSidebarNavLink"] span {
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+        word-break: break-word !important;
+    }
+    [data-testid="stSidebarNavLink"] {
+        height: auto !important;
+        padding: 8px 12px !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
