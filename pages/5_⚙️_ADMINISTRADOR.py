@@ -104,7 +104,7 @@ with tab3:
     st.info("Busca al usuario por su apodo y asígnale una contraseña temporal.")
 
     try:
-        usuarios = supabase.table("profiles").select("nombre, email_asociado").execute().data
+        usuarios = supabase.table("profiles").select("id, nombre, email_asociado").execute().data
     except Exception as e:
         st.error("Error al cargar usuarios.")
         usuarios = []
@@ -121,12 +121,9 @@ with tab3:
                 st.error("Mínimo 6 caracteres.")
             else:
                 try:
-                    # Buscar el email del usuario seleccionado
-                    email = next(u['email_asociado'] for u in usuarios if u['nombre'] == apodo_sel)
-                    # Buscar el user_id en auth
-                    user_id = next(u['id'] for u in supabase.table("profiles").select("id, nombre").eq("nombre", apodo_sel).execute().data)
-                    # Cambiar contraseña usando admin API
-                    supabase.auth.admin.update_user_by_id(user_id, {"password": nueva_clave})
+                    user_id = next(u['id'] for u in usuarios if u['nombre'] == apodo_sel)
+                    # ← AQUÍ el cambio clave: supabase_admin en vez de supabase
+                    supabase_admin.auth.admin.update_user_by_id(user_id, {"password": nueva_clave})
                     st.success(f"✅ Contraseña de **{apodo_sel}** actualizada. Avísale que su nueva clave es la que escribiste.")
                 except Exception as e:
                     st.error(f"Error al cambiar contraseña: {e}")
