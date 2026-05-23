@@ -102,7 +102,7 @@ if not st.session_state["authenticated"]:
                             "email_asociado": new_email,
                             "rol": "user"
                         }).execute()
-                        st.success("¡Cuenta creada! Revisa tu correo.")
+                        st.success("¡Cuenta creada!")
                     else:
                         st.error("No se pudo crear la cuenta.")
                 except Exception as e:
