@@ -123,7 +123,7 @@ with tab3:
                 try:
                     user_id = next(u['id'] for u in usuarios if u['nombre'] == apodo_sel)
                     supabase_admin.auth.admin.update_user_by_id(user_id, {"password": nueva_clave})
-                    st.success(f"✅ Contraseña de **{apodo_sel}** actualizada. Avísale que su nueva clave es la que escribiste.")
+                    st.success(f"✅ Contraseña de **{apodo_sel}** actualizada.")
                 except Exception as e:
                     st.error(f"Error al cambiar contraseña: {e}")
     else:
@@ -131,32 +131,58 @@ with tab3:
 
 # --- TAB 4: RESETEAR TODO ---
 with tab4:
-    st.subheader("🔄 Resetear puntajes")
-    st.warning("⚠️ Esta acción pondrá en 0 los puntajes de TODOS los usuarios. No se puede deshacer.")
-    confirmar_puntajes = st.checkbox("Confirmo que quiero resetear todos los puntajes a 0", key="conf_puntajes")
-    if st.button("🔄 Resetear todos los puntajes", type="primary"):
-        if not confirmar_puntajes:
-            st.error("Debes marcar la casilla de confirmación primero.")
+    st.subheader("🔄 Panel de reseteo")
+    st.markdown("---")
+
+    # --- RESETEAR PUNTOS ---
+    st.subheader("1️⃣ Resetear puntos")
+    st.warning("⚠️ Pondrá en 0 los puntos de todos los pronósticos.")
+    conf1 = st.checkbox("Confirmo resetear todos los puntos a 0", key="conf_puntos")
+    if st.button("🔄 Resetear puntos", type="primary", key="btn_puntos"):
+        if not conf1:
+            st.error("Marca la casilla de confirmación.")
         else:
             try:
-                supabase.table("profiles").update({"puntaje": 0}).neq("id", "00000000-0000-0000-0000-000000000000").execute()
-                st.success("✅ Todos los puntajes reseteados a 0.")
+                supabase.table("pronosticos").update({"puntos": 0}).neq("id", "00000000-0000-0000-0000-000000000000").execute()
+                st.success("✅ Todos los puntos reseteados a 0.")
                 st.rerun()
             except Exception as e:
-                st.error(f"Error al resetear puntajes: {e}")
+                st.error(f"Error: {e}")
 
     st.markdown("---")
 
-    st.subheader("🗑️ Borrar todos los pronósticos")
-    st.warning("⚠️ Esta acción borrará TODOS los pronósticos de todos los usuarios. No se puede deshacer.")
-    confirmar_pronosticos = st.checkbox("Confirmo que quiero borrar todos los pronósticos", key="conf_pronosticos")
-    if st.button("🗑️ Borrar todos los pronósticos", type="primary"):
-        if not confirmar_pronosticos:
-            st.error("Debes marcar la casilla de confirmación primero.")
+    # --- BORRAR PRONÓSTICOS ---
+    st.subheader("2️⃣ Borrar todos los pronósticos")
+    st.warning("⚠️ Borrará TODOS los pronósticos de todos los usuarios.")
+    conf2 = st.checkbox("Confirmo borrar todos los pronósticos", key="conf_pronosticos")
+    if st.button("🗑️ Borrar pronósticos", type="primary", key="btn_pronosticos"):
+        if not conf2:
+            st.error("Marca la casilla de confirmación.")
         else:
             try:
                 supabase.table("pronosticos").delete().neq("id", "00000000-0000-0000-0000-000000000000").execute()
                 st.success("✅ Todos los pronósticos borrados.")
                 st.rerun()
             except Exception as e:
-                st.error(f"Error al borrar pronósticos: {e}")
+                st.error(f"Error: {e}")
+
+    st.markdown("---")
+
+    # --- BORRAR RESULTADOS ---
+    st.subheader("3️⃣ Borrar resultados de partidos")
+    st.warning("⚠️ Pondrá todos los partidos en estado 'pendiente' y borrará los goles.")
+    conf3 = st.checkbox("Confirmo borrar todos los resultados", key="conf_resultados")
+    if st.button("🗑️ Borrar resultados", type="primary", key="btn_resultados"):
+        if not conf3:
+            st.error("Marca la casilla de confirmación.")
+        else:
+            try:
+                supabase.table("partidos").update({
+                    "goles_1": None,
+                    "goles_2": None,
+                    "estado": "pendiente"
+                }).neq("id", "00000000-0000-0000-0000-000000000000").execute()
+                st.success("✅ Todos los resultados borrados. Partidos vueltos a pendiente.")
+                st.rerun()
+            except Exception as e:
+                st.error(f"Error: {e}")
