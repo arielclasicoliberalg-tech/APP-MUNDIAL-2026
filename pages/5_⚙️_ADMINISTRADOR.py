@@ -1,5 +1,5 @@
 import streamlit as st
-from src.database import supabase
+from src.database import supabase, supabase_admin
 import base64
 
 # --- FUNCIÓN PARA EL FONDO ---
