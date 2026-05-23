@@ -143,7 +143,7 @@ with tab4:
             st.error("Marca la casilla de confirmación.")
         else:
             try:
-                supabase.table("pronosticos").update({"puntos": 0}).neq("id", "00000000-0000-0000-0000-000000000000").execute()
+                supabase.table("pronosticos").update({"puntos": 0}).neq("id", 0).execute()
                 st.success("✅ Todos los puntos reseteados a 0.")
                 st.rerun()
             except Exception as e:
@@ -160,7 +160,7 @@ with tab4:
             st.error("Marca la casilla de confirmación.")
         else:
             try:
-                supabase.table("pronosticos").delete().neq("id", "00000000-0000-0000-0000-000000000000").execute()
+                supabase.table("pronosticos").delete().neq("id", 0).execute()
                 st.success("✅ Todos los pronósticos borrados.")
                 st.rerun()
             except Exception as e:
@@ -170,7 +170,7 @@ with tab4:
 
     # --- BORRAR RESULTADOS ---
     st.subheader("3️⃣ Borrar resultados de partidos")
-    st.warning("⚠️ Pondrá todos los partidos en estado 'pendiente' y borrará los goles.")
+    st.warning("⚠️ Pondrá todos los partidos en estado pendiente y borrará los goles.")
     conf3 = st.checkbox("Confirmo borrar todos los resultados", key="conf_resultados")
     if st.button("🗑️ Borrar resultados", type="primary", key="btn_resultados"):
         if not conf3:
@@ -181,7 +181,7 @@ with tab4:
                     "goles_1": None,
                     "goles_2": None,
                     "estado": "pendiente"
-                }).neq("id", "00000000-0000-0000-0000-000000000000").execute()
+                }).neq("id", 0).execute()
                 st.success("✅ Todos los resultados borrados. Partidos vueltos a pendiente.")
                 st.rerun()
             except Exception as e:
