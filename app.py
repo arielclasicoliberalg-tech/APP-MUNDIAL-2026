@@ -37,7 +37,12 @@ def set_background(image_file):
         st.error(f"No se encontró la imagen en {image_file}")
 
 # --- CONFIGURACIÓN ---
-st.set_page_config(page_title="App del Mundial 2026", layout="wide", page_icon="⚽")
+st.set_page_config(
+    page_title="App del Mundial 2026", 
+    layout="wide", 
+    page_icon="⚽",
+    initial_sidebar_state="auto"
+)
 set_background("assets/fondo.png")
 
 if "authenticated" not in st.session_state:
