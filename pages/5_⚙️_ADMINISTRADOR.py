@@ -34,9 +34,9 @@ if st.session_state.get("role") != "admin":
 st.title("⚙️ PANEL DE ADMINISTRADOR")
 st.markdown("---")
 
-tab1, tab2, tab3 = st.tabs(["🗑️ Gestión de Pronósticos", "⚽ Cargar Resultados", "🔑 Resetear Contraseña"])
+tab1, tab2, tab3, tab4 = st.tabs(["🗑️ Gestión de Pronósticos", "⚽ Cargar Resultados", "🔑 Resetear Contraseña", "🔄 Resetear Todo"])
 
-# --- TAB 1: GESTIÓN DE PRONÓSTICOS (ELIMINACIÓN LÓGICA) ---
+# --- TAB 1: GESTIÓN DE PRONÓSTICOS ---
 with tab1:
     st.subheader("Gestionar Pronósticos")
     try:
@@ -87,8 +87,8 @@ with tab2:
         if st.button("Guardar Resultado y Finalizar", type="primary"):
             try:
                 supabase.table("partidos").update({
-                    "goles_1": g1, 
-                    "goles_2": g2, 
+                    "goles_1": g1,
+                    "goles_2": g2,
                     "estado": "finalizado"
                 }).eq("id", partido_obj['id']).execute()
                 st.success(f"Resultado guardado: {partido_obj['equipo_1']} {g1} - {g2} {partido_obj['equipo_2']}.")
@@ -122,10 +122,41 @@ with tab3:
             else:
                 try:
                     user_id = next(u['id'] for u in usuarios if u['nombre'] == apodo_sel)
-                    # ← AQUÍ el cambio clave: supabase_admin en vez de supabase
                     supabase_admin.auth.admin.update_user_by_id(user_id, {"password": nueva_clave})
                     st.success(f"✅ Contraseña de **{apodo_sel}** actualizada. Avísale que su nueva clave es la que escribiste.")
                 except Exception as e:
                     st.error(f"Error al cambiar contraseña: {e}")
     else:
         st.info("No hay usuarios registrados.")
+
+# --- TAB 4: RESETEAR TODO ---
+with tab4:
+    st.subheader("🔄 Resetear puntajes")
+    st.warning("⚠️ Esta acción pondrá en 0 los puntajes de TODOS los usuarios. No se puede deshacer.")
+    confirmar_puntajes = st.checkbox("Confirmo que quiero resetear todos los puntajes a 0", key="conf_puntajes")
+    if st.button("🔄 Resetear todos los puntajes", type="primary"):
+        if not confirmar_puntajes:
+            st.error("Debes marcar la casilla de confirmación primero.")
+        else:
+            try:
+                supabase.table("profiles").update({"puntaje": 0}).neq("id", "00000000-0000-0000-0000-000000000000").execute()
+                st.success("✅ Todos los puntajes reseteados a 0.")
+                st.rerun()
+            except Exception as e:
+                st.error(f"Error al resetear puntajes: {e}")
+
+    st.markdown("---")
+
+    st.subheader("🗑️ Borrar todos los pronósticos")
+    st.warning("⚠️ Esta acción borrará TODOS los pronósticos de todos los usuarios. No se puede deshacer.")
+    confirmar_pronosticos = st.checkbox("Confirmo que quiero borrar todos los pronósticos", key="conf_pronosticos")
+    if st.button("🗑️ Borrar todos los pronósticos", type="primary"):
+        if not confirmar_pronosticos:
+            st.error("Debes marcar la casilla de confirmación primero.")
+        else:
+            try:
+                supabase.table("pronosticos").delete().neq("id", "00000000-0000-0000-0000-000000000000").execute()
+                st.success("✅ Todos los pronósticos borrados.")
+                st.rerun()
+            except Exception as e:
+                st.error(f"Error al borrar pronósticos: {e}")
