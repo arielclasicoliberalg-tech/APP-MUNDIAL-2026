@@ -1,6 +1,5 @@
-
 [theme]
 base="light"
 
 [client]
-toolbarMode="minimal"
+toolbarMode="viewer"
