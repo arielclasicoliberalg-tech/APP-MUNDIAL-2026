@@ -20,6 +20,24 @@ def set_background(image_file):
             background-attachment: fixed;
         }}
         
+        /* Ocultar barra superior y botones de Streamlit */
+        [data-testid="stToolbar"] {{
+            display: none !important;
+        }}
+        [data-testid="manage-app-button"] {{
+            display: none !important;
+        }}
+        header[data-testid="stHeader"] {{
+            display: none !important;
+        }}
+        footer {{
+            display: none !important;
+        }}
+        #MainMenu {{
+            display: none !important;
+        }}
+
+        /* Texto del menú en múltiples líneas */
         [data-testid="stSidebarNavLink"] span {{
             white-space: normal !important;
             overflow: visible !important;
