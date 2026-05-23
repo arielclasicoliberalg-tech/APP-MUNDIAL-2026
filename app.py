@@ -37,6 +37,11 @@ def set_background(image_file):
             display: none !important;
         }}
 
+        /* Mostrar botón del sidebar */
+        [data-testid="stSidebarCollapsedControl"] {{
+            display: block !important;
+        }}
+
         /* Texto del menú en múltiples líneas */
         [data-testid="stSidebarNavLink"] span {{
             white-space: normal !important;
