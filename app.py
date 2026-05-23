@@ -1,3 +1,4 @@
+
 import streamlit as st
 import base64
 from src.database import supabase
@@ -20,14 +21,8 @@ def set_background(image_file):
             background-attachment: fixed;
         }}
         
-        /* Ocultar barra superior y botones de Streamlit */
+        /* Ocultar solo toolbar y footer, NO el header */
         [data-testid="stToolbar"] {{
-            display: none !important;
-        }}
-        [data-testid="manage-app-button"] {{
-            display: none !important;
-        }}
-        header[data-testid="stHeader"] {{
             display: none !important;
         }}
         footer {{
@@ -37,9 +32,9 @@ def set_background(image_file):
             display: none !important;
         }}
 
-        /* Mostrar botón del sidebar */
-        [data-testid="stSidebarCollapsedControl"] {{
-            display: block !important;
+        /* Header transparente para que se vean las flechitas */
+        header[data-testid="stHeader"] {{
+            background: transparent !important;
         }}
 
         /* Texto del menú en múltiples líneas */
